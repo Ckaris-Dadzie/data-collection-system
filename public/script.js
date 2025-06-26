@@ -1,0 +1,357 @@
+// 1. Facility mapping
+const facilities = {
+  "Kotobabi": ["Anthon Memorial Hospital", "Anthon Memorial Hospital Annex", "Effan Victory Clinic", "Life View Medical Hospital", 
+              "Anthon CHPS", "Bright Star CHPS", "Ebony Down CHPS", "Pigfarm CHPS", "Anthon Annex CHPS", "Great Gerraldo CHPS"
+              ],
+
+  "Accra New Town": ["Ghanuba Specialist Hospital", "Medylife Healthcare (Clinix)", "Mercy Ana’s Maternity Home", "Mission Clinic", 
+                    "Mustard Health Systems and", "Fertility Centre (Sape Agbo)", "Gift Medical Centre", "Apostolic CHPS", 
+                    "Mrs. Dua CHPS", "Ayidiki CHPS", "Wisdom CHPS"
+                    ],
+
+  "Alajo": ["Alajo Community Clinic", "Unfolding Glory Medical Centre", "Alajo Park CHPS", "Delape CHPS", "High Tension CHPS", 
+            "Pele CHPS", "Polo Park CHPS"
+          ],
+
+  "Kokomlemle": ["Entrance University Hospital", "Mallam Atta Government Clinic", "Mariestopes International Ghana", 
+                "Salvation Army Anidasofie Clinic", "Holy Heights Clinic ", "Anidasofie CHPS", "De-youngsters CHPS", 
+                "New Page CHPS", "Mallam Atta CHPS", "Tip Toe CHPS"
+                ]
+};
+
+// 2. Program questions mapping (not used in fetch mode, but left for reference)
+const programQuestions = {
+  "Clinical Care": [
+    "Availability of standard treatment guideline",
+    "Availability of diagnostic equipment",
+    "Adherence to clinical protocols",
+    "Adequate staff at the facility",
+    "Proper infection control measures",
+    "Availability of emergency drugs",
+    "Functioning referral system",
+    "Patient confidentiality maintained"
+  ],
+  "Nutrition Services": [
+    "Availability of growth monitoring tools",
+    "Availability of vitamin A supplements",
+    "Adequate nutrition counseling",
+    "Linkage with community-based services",
+    "Record-keeping for malnourished children",
+    "Availability of therapeutic foods",
+    "Proper storage of nutrition commodities"
+  ],
+  "Health Promotion": [
+    "Use of IEC materials",
+    "Community health education activities",
+    "Availability of health education plan",
+    "Monitoring of health promotion activities"
+  ]
+};
+
+// 3. DOM references
+const subMunicipal = document.getElementById("subMunicipal");
+const facilityVisited = document.getElementById("facility_visited");
+const locationField = document.getElementById("location");
+const programSelect = document.getElementById("program");
+const questionContainer = document.getElementById("questionsTableBody");
+
+// 4. Update facility dropdown and location field based on Sub-Municipal
+subMunicipal.addEventListener("change", () => {
+  const selected = subMunicipal.value;
+  locationField.value = selected;
+  facilityVisited.innerHTML = "";
+
+  if (facilities[selected]) {
+    facilities[selected].forEach(fac => {
+      const opt = document.createElement("option");
+      opt.value = fac;
+      opt.textContent = fac;
+      facilityVisited.appendChild(opt);
+    });
+  }
+});
+
+// 5. Generate question table dynamically
+function generateQuestions(questions) {
+  questionContainer.innerHTML = ""; // Clear old questions
+
+  const table = document.createElement("table");
+
+  // Table headers
+  const thead = document.createElement("thead");
+  thead.innerHTML = `
+    <tr>
+      <th>Qst. No.</th>
+      <th>Question</th>
+      <th>Answer</th>
+      <th>Remarks</th>
+      <th>Score</th>
+    </tr>
+  `;
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+
+  questions.forEach((q, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td class="question-number">${q.question_number || index + 1}</td>
+      <td class="question-text">
+        <input type="hidden" name="question_id_${index}" value="${q.id}" />
+        ${q.question_text}
+      </td>
+      <td>
+        <select name="answer_${index}">
+          <option value="">--Select--</option>
+          <option>Yes</option>
+          <option>No</option>
+          <option>NA</option>
+        </select>
+      </td>
+      <td>
+        <select name="remarks_${index}">
+          <option value="">--Select--</option>
+          <option>Poor</option>
+          <option>Credit</option>
+          <option>Good</option>
+          <option>Better</option>
+          <option>Excellent</option>
+        </select>
+      </td>
+      <td>
+        <select name="score_${index}">
+          <option value="">--Select--</option>
+          <option>0</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+
+  table.appendChild(tbody);
+  questionContainer.appendChild(table);
+}
+
+// 6. Load questions from backend when program changes
+programSelect.addEventListener("change", () => {
+  const selectedProgram = programSelect.value;
+  if (!selectedProgram) return;
+
+  fetch(`http://localhost:5000/api/forms/questions/${encodeURIComponent(selectedProgram)}`)
+    .then(res => res.json())
+    .then(questions => {
+      if (questions.length > 0) {
+        generateQuestions(questions);
+      } else {
+        questionContainer.innerHTML = "<p style='color:red;'>No questions available for this program yet.</p>";
+      }
+    })
+    .catch(err => {
+      console.error("❌ Error loading questions:", err);
+      questionContainer.innerHTML = "<p style='color:red;'>Failed to load questions.</p>";
+    });
+});
+
+// 7. Submit form with metadata + answers
+document.getElementById("dataForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  // Convert form to key-value object
+  const formData = new FormData(this);
+  const data = Object.fromEntries(formData.entries());
+
+  // ✅ Validate metadata
+  if (
+    !data.monitoring_number ||
+    !data.form_type ||
+    !data.program ||
+    !data.sub_municipal ||
+    !data.facility_visited ||
+    !data.respondents ||
+    !data.team_members
+  ) {
+    alert("❌ Please fill all required metadata fields in Step 1.");
+    return;
+  }
+
+  // ✅ Validate general comments
+  if (!data.general_comments || data.general_comments.trim() === "") {
+    alert("❌ Please enter general comments in Step 3.");
+    return;
+  }
+
+  // ✅ Collect and validate answers
+  const questionRows = document.querySelectorAll("#questionsTableBody table tbody tr");
+  const answers = [];
+
+  let hasErrors = false;
+  let firstInvalidRow = null;
+
+  questionRows.forEach((row, index) => {
+    const question_id = row.querySelector('input[type="hidden"]')?.value;
+    const answer = row.querySelector(`[name="answer_${index}"]`)?.value;
+    const remark = row.querySelector(`[name="remarks_${index}"]`)?.value;
+    const score = row.querySelector(`[name="score_${index}"]`)?.value;
+
+    if (!answer || !remark || !score) {
+      hasErrors = true;
+      row.style.border = "2px solid red";
+      if (!firstInvalidRow) firstInvalidRow = row;
+    } else {
+      row.style.border = "";
+    }
+
+    // ✅ Use collected values directly
+    answers.push({
+      question_id: parseInt(question_id),
+      answer,
+      remark,
+      score
+    });
+  });
+
+  if (questionRows.length > 0 && hasErrors) {
+    alert("❌ Please complete all questions (Answer, Remark, and Score).");
+    if (firstInvalidRow) {
+      firstInvalidRow.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    return;
+  }
+
+  // 🔄 Submit payload
+  const payload = {
+    ...data,
+    answers
+  };
+
+  try {
+    const res = await fetch("http://localhost:5000/api/forms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+      alert("✅ Form and answers submitted successfully!");
+      this.reset();
+      questionContainer.innerHTML = "";
+    } else {
+      throw new Error(result.message || "Submission failed.");
+    }
+  } catch (err) {
+    console.error("❌ Error submitting form:", err);
+    alert("❌ Error submitting form. Check console for details.");
+  }
+});
+
+
+// // 6. Submit form with metadata + answers
+// document.getElementById("dataForm").addEventListener("submit", async function (e) {
+//   e.preventDefault();
+
+//   // Convert form data to an object
+//   const formData = new FormData(this);
+//   const data = Object.fromEntries(formData.entries());
+
+//   // ✅ Required field validation for Metadata (Step 1)
+//   if (
+//     !data.monitoring_number ||
+//     !data.form_type ||
+//     !data.program ||
+//     !data.sub_municipal ||
+//     !data.facility_visited ||
+//     !data.respondents ||
+//     !data.team_members
+//   ) {
+//     alert("❌ Please fill all required metadata fields in Step 1.");
+//     return;
+//   }
+
+//   // ✅ Required field validation for General Comments (Step 3)
+//   if (!data.general_comments || data.general_comments.trim() === "") {
+//     alert("❌ Please enter general comments in Step 3.");
+//     return;
+//   }
+
+//   // ✅ Collect answers (Step 2 compulsory now! )
+//   const questionRows = document.querySelectorAll("#questionsTableBody table tbody tr");
+//   const answers = [];
+
+//   questionRows.forEach((row, index) => {
+//     const question_number = row.querySelector(".question-number")?.textContent || index + 1;
+//     const question_text = row.querySelector(".question-text")?.textContent.trim();
+//     const answer = row.querySelector(`[name="answer_${index}"]`)?.value;
+//     const remark = row.querySelector(`[name="remarks_${index}"]`)?.value;
+//     const score = row.querySelector(`[name="score_${index}"]`)?.value;
+
+//     // The code below validate the questons, answers, remarks, and score fields.
+
+  
+// // // ✅ Track if any field is missing and stop repeating alerts
+// // let isValid = true;
+
+// // // ✅ Clear previous highlights
+// // questionRows.forEach(row => row.style.border = "");
+
+// // // Loop through all questions
+// // questionRows.forEach((row, index) => {
+// //   const question_number = row.querySelector(".question-number")?.textContent || index + 1;
+// //   const question_text = row.querySelector(".question-text")?.textContent.trim();
+// //   const answer = row.querySelector(`[name="answer_${index}"]`)?.value;
+// //   const remark = row.querySelector(`[name="remarks_${index}"]`)?.value;
+// //   const score = row.querySelector(`[name="score_${index}"]`)?.value;
+
+// //   // ✅ If any of the 3 fields are missing, mark invalid once
+// //   if (!answer || !remark || !score) {
+// //     isValid = false;
+// //     row.style.border = "2px solid red"; // Highlight row with error
+// //   }
+
+// //   // Still collect the answer for submission
+// //   answers.push({ question_number, question_text, answer, remark, score });
+// // });
+
+// // // ✅ Show only ONE alert if any row is incomplete
+// // if (questionRows.length > 0 && !isValid) {
+// //   alert("❌ Please complete all questions: Answer, Remarks, and Score.");
+// //   return;
+// // }
+
+//   });
+
+//   const payload = {
+//     ...data,
+//     answers
+//   };
+
+//   // Submit to backend
+//   try {
+//     const res = await fetch("http://localhost:5000/api/forms", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(payload)
+//     });
+
+//     const result = await res.json();
+
+//     if (result.success) {
+//       alert("✅ Form and answers submitted successfully!");
+//       this.reset(); // Clear form
+//       questionContainer.innerHTML = ""; // Clear questions table
+//     } else {
+//       throw new Error(result.message || "Submission failed.");
+//     }
+//   } catch (err) {
+//     console.error("❌ Error submitting form:", err);
+//     alert("❌ Error submitting form. Check console for details.");
+//   }
+// });
+
+

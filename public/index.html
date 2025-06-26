@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Collection Form</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="nav.css" />
+
+</head>
+<body>
+
+     <!-- 🔗 Navigation Bar -->
+        <nav class="navbar">
+        <ul class="nav-links">
+            <li><a href="index.html">📝 Submit Form</a></li>
+            <li><a href="view.html">🔍 View Forms</a></li>
+            <li><a href="edit.html">✏️ Edit Form</a></li>
+            <li><a href="admin.html">🛠️ Admin</a></li>
+            <li><a href="#">📋 Action Plan</a></li>
+            <li><a href="#">🧪 Assessments</a></li>
+        </ul>
+        </nav>
+
+    <form id="dataForm">
+
+        <div class="form-container">
+            <h1 style="text-transform: uppercase; font-size: 35px; text-align: center;"
+            >Integrated Monitoring and Supportive <br> Supervision Checklist</h1>
+            
+            <!-- Step 1: Metadata -->
+            <section class="form-section">
+                <h2>Step 1: Metadata</h2>
+                <label>Monitoring Number (Year):
+                <input type="text" name="monitoring_number" required />
+                </label>
+
+                <label>Form Type (Quarter):
+                <select name="form_type">
+                    <option value="">-- Select Quarter --</option>
+                    <option>First Quarter</option>
+                    <option>Second Quarter</option>
+                    <option>Third Quarter</option>
+                    <option>Fourth Quarter</option>
+                </select>
+                </label>
+
+                <label>Name of Organisation:
+                <input type="text" name="organisation_name" value="Ayawaso Municipal Health Directorate" readonly />
+                </label>
+
+                <label>Name of Project:
+                <input type="text" name="project_name" value="Integrated Monitoring and Supportive Supervision" readonly />
+                </label>
+
+                <label for="program">Program:</label>
+                    <select name="program" id="program">
+                        <option value="">--Select Program--</option>
+                        <option>Clinical Care</option>
+                        <option>Nutrition Services</option>
+                        <option>Expanded Program of Immunisation, Surveillance and Tuberculosis</option>
+                        <option>Health Promotion</option>
+                        <option>Financial Management</option>
+                        <option>Reproductive and Child Health</option>
+                        <option>Management of Stores and Supplies</option>
+                        <option>Quality Assurance</option>
+                        <option>Standards, Protocols and Guidelines</option>
+                        <option>Management Practice</option>
+                        <option>Malaria Elimination</option>
+                        <option>HIV/AIDS Control</option>
+                        <option>Health Information Management</option>
+                        <option>Mental Health</option>
+                        <option>CHPS/MCHNP</option>
+                    </select>
+
+
+                <label>Region:
+                <input type="text" name="region" value="Greater Accra" readonly />
+                </label>
+
+                <label>Sub-Municipal:
+                <select name="sub_municipal" id="subMunicipal">
+                    <option value="">-- Select Sub-Municipal --</option>
+                    <option value="Kotobabi">Kotobabi</option>
+                    <option value="Accra New Town">Accra New Town</option>
+                    <option value="Alajo">Alajo</option>
+                    <option value="Kokomlemle">Kokomlemle</option>
+                </select>
+                </label>
+
+                <label>Facility Visited:
+                <select name="facility_visited" id="facility_visited"></select>
+                </label>
+
+                <label>Location:
+                <input type="text" name="location" id="location" readonly />
+                </label>
+
+                <label>Respondent(s):
+                <input type="text" name="respondents" required />
+                </label>
+
+                <label>Monitoring Team:
+                <select name="monitoring_team">
+                    <option value="">-- Select Team --</option>
+                    <option>Team A</option>
+                    <option>Team B</option>
+                    <option>Team C</option>
+                    <option>Team D</option>
+                    <option>Team E</option>
+                    <option>Team F</option>
+                    <option>Team G</option>
+                </select>
+                </label>
+
+                <label>Team Members:
+                <input type="text" name="team_members" required />
+                </label>
+                
+            </section>
+
+            <!-- Step 2: Introduction -->
+            <section class="form-section">
+                <h2>Step 2: Introduction</h2>
+                <div id="questionsTableBody"></div>
+            </section>
+
+            <!-- Step 3: General Comments -->
+            <section class="form-section">
+                <h2>Step 3: General Comments</h2>
+                <label>General Comments:
+                <textarea name="general_comments" rows="4" required></textarea>
+                </label>
+                <button type="submit">Submit</button>
+            </section>
+            </form>
+        </div>
+
+    </form>
+    
+  <script src="script.js"></script>
+</body>
+</html>

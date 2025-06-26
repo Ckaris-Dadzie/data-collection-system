@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Submitted Form</title>
+
+  <!--Custem css links -->
+  <link rel="stylesheet" href="edit.css" />
+  <link rel="stylesheet" href="nav.css" />
+
+</head>
+<body>
+
+   <!-- 🔗 Navigation Bar -->
+  <nav class="navbar">
+    <ul class="nav-links">
+      <li><a href="index.html">📝 Submit Form</a></li>
+      <li><a href="view.html">🔍 View Forms</a></li>
+      <li><a href="edit.html">✏️ Edit Form</a></li>
+      <li><a href="admin.html">🛠️ Admin</a></li>
+      <li><a href="#">📋 Action Plan</a></li>
+      <li><a href="#">🧪 Assessments</a></li>
+    </ul>
+  </nav>
+
+
+  <div class="edit-container">
+    <h1>Edit Submitted Form</h1>
+
+    <!-- 🔍 Search Section -->
+    <div class="search-section">
+      <label for="formTypeSearch">Form Type (Quarter):
+        <select id="formTypeSearch">
+          <option value="">-- Select --</option>
+          <option>First Quarter</option>
+          <option>Second Quarter</option>
+          <option>Third Quarter</option>
+          <option>Fourth Quarter</option>
+        </select>
+      </label>
+
+      <label for="monitoringNumberSearch">Monitoring Number:
+        <input type="text" id="monitoringNumberSearch" placeholder="Enter Monitoring Number" />
+      </label>
+
+      <label for="programSearch">Program:
+        <select id="programSearch">
+          <option value="">-- Select Program --</option>
+          <option>Clinical Care</option>
+          <option>Nutrition Services</option>
+          <option>Expanded Program of Immunisation, Surveillance and Tuberculosis</option>
+          <option>Health Promotion</option>
+          <option>Financial Management</option>
+          <option>Reproductive and Child Health</option>
+          <option>Management of Stores and Supplies</option>
+          <option>Quality Assurance</option>
+          <option>Standards, Protocols and Guidelines</option>
+          <option>Management Practice</option>
+          <option>Malaria Elimination</option>
+          <option>HIV/AIDS Control</option>
+          <option>Health Information Management</option>
+          <option>Mental Health</option>
+          <option>CHPS/MCHNP</option>
+        </select>
+      </label>
+
+      <!-- ✅ Added Sub-Municipal -->
+      <label for="subMunicipalSearch">Sub-Municipal:
+        <select id="subMunicipalSearch">
+          <option value="">-- Select --</option>
+          <option value="Kotobabi">Kotobabi</option>
+          <option value="Accra New Town">Accra New Town</option>
+          <option value="Alajo">Alajo</option>
+          <option value="Kokomlemle">Kokomlemle</option>
+        </select>
+      </label>
+
+      <!-- ✅ Added Facility Visited -->
+      <label for="facilityVisitedSearch">Facility Visited:
+        <select id="facilityVisitedSearch">
+          <option value="">-- Select Facility --</option>
+        </select>
+      </label>
+
+      <button id="loadBtn">Load Form</button>
+    </div>
+
+    <!-- ✏️ Edit Form Section -->
+    <form id="editForm" style="display:none;">
+      <h2>Metadata</h2>
+      <div class="metadata-section">
+        <label>Organisation:
+          <input type="text" name="organisation_name" id="organisation_name" />
+        </label>
+        <label>Project Name:
+          <select name="project_name" id="project_name">
+            <!-- Populate dynamically -->
+          </select>
+        </label>
+        <label>Region:
+          <input type="text" name="region" id="region" value="Greater Accra" />
+        </label>
+        <label>Sub-Municipal:
+          <select name="sub_municipal" id="sub_municipal">
+            <option value="">-- Select --</option>
+            <option value="Kotobabi">Kotobabi</option>
+            <option value="Accra New Town">Accra New Town</option>
+            <option value="Alajo">Alajo</option>
+            <option value="Kokomlemle">Kokomlemle</option>
+          </select>
+        </label>
+        <label>Facility Visited:
+          <select name="facility_visited" id="facility_visited">
+            <option value="">-- Select Facility --</option>
+          </select>
+        </label>
+        <label>Location:
+          <input type="text" name="location" id="location" />
+        </label>
+        <label>Respondents:
+          <input type="text" name="respondents" id="respondents" />
+        </label>
+        <label>Monitoring Team:
+          <select name="monitoring_team" id="monitoring_team">
+            <option>Team A</option>
+            <option>Team B</option>
+            <option>Team C</option>
+            <option>Team D</option>
+            <option>Team E</option>
+            <option>Team F</option>
+            <option>Team G</option>
+          </select>
+        </label>
+        <label>Team Members:
+          <input type="text" name="team_members" id="team_members" />
+        </label>
+      </div>
+
+      <h2>Introduction (Questions)</h2>
+      <div id="questionEditSection">
+        <!-- Questions will be loaded here -->
+      </div>
+
+      <h2>General Comments</h2>
+      <textarea name="general_comments" id="general_comments" rows="4" style="width: 100%;"></textarea>
+
+      <button type="submit" id="updateBtn">Update Form</button>
+    </form>
+  </div>
+
+  <script src="edit.js"></script>
+</body>
+</html>
