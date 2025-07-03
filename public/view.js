@@ -36,6 +36,12 @@ document.getElementById("subMunicipalFilter").addEventListener("change", () => {
   }
 });
 
+
+
+const BASE_API_URL = window.location.hostname.includes("localhost")
+  ? "http://localhost:5000"
+  : "https://data-collection-system.onrender.com";
+
 // 🔁 Handle Search button click
 document.getElementById("searchBtn").addEventListener("click", async () => {
   const formType = document.getElementById("formTypeFilter").value;
@@ -54,7 +60,7 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
   });
 
   try {
-    const res = await fetch(`http://localhost:5000/api/forms/search?${params}`);
+    const res = await fetch(${BASE_API_URL}/api/forms/search?${params});
     const data = await res.json();
 
     if (data.success && data.forms.length > 0) {
