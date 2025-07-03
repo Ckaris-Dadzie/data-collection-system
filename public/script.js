@@ -19,6 +19,12 @@ const facilities = {
                 ]
 };
 
+// 🔁 Smart backend base URL
+const BASE_API_URL = window.location.hostname.includes("localhost")
+  ? "http://localhost:5000"
+  : "https://data-collection-system.onrender.com";
+
+
 // 2. Program questions mapping (not used in fetch mode, but left for reference)
 const programQuestions = {
   "Clinical Care": [
@@ -142,7 +148,7 @@ programSelect.addEventListener("change", () => {
   const selectedProgram = programSelect.value;
   if (!selectedProgram) return;
 
-  fetch(`http://localhost:5000/api/forms/questions/${encodeURIComponent(selectedProgram)}`)
+  fetch(`${BASE_API_URL}/api/forms/questions/${encodeURIComponent(selectedProgram)}`)
     .then(res => res.json())
     .then(questions => {
       if (questions.length > 0) {
@@ -164,6 +170,13 @@ document.getElementById("dataForm").addEventListener("submit", async function (e
   // Convert form to key-value object
   const formData = new FormData(this);
   const data = Object.fromEntries(formData.entries());
+
+  const res = await fetch(`${BASE_API_URL}/api/forms`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});
+
 
   // ✅ Validate metadata
   if (
