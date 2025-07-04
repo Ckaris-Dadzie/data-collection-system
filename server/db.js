@@ -9,6 +9,14 @@ const pool = new Pool({
     rejectUnauthorized: false, // <-- This is required for Supabase
   },
 });
+// const pool = new Pool({
+//   host: process.env.DB_HOST,
+//   port: process.env.DB_PORT,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASSWORD,
+//   database: process.env.DB_NAME,
+//   model: process.env.DB_POOL_MODEL,
+// });
 
 // const pool = new Pool({
 //   host: process.env.DB_HOST,

@@ -24,6 +24,36 @@ const BASE_API_URL = window.location.hostname.includes("localhost")
   ? "http://localhost:5000"
   : "https://data-collection-system.onrender.com";
 
+
+// 2. Program questions mapping (not used in fetch mode, but left for reference)
+const programQuestions = {
+  "Clinical Care": [
+    "Availability of standard treatment guideline",
+    "Availability of diagnostic equipment",
+    "Adherence to clinical protocols",
+    "Adequate staff at the facility",
+    "Proper infection control measures",
+    "Availability of emergency drugs",
+    "Functioning referral system",
+    "Patient confidentiality maintained"
+  ],
+  "Nutrition Services": [
+    "Availability of growth monitoring tools",
+    "Availability of vitamin A supplements",
+    "Adequate nutrition counseling",
+    "Linkage with community-based services",
+    "Record-keeping for malnourished children",
+    "Availability of therapeutic foods",
+    "Proper storage of nutrition commodities"
+  ],
+  "Health Promotion": [
+    "Use of IEC materials",
+    "Community health education activities",
+    "Availability of health education plan",
+    "Monitoring of health promotion activities"
+  ]
+};
+
 // 2. DOM references
 const subMunicipal = document.getElementById("subMunicipal");
 const facilityVisited = document.getElementById("facility_visited");
@@ -138,6 +168,13 @@ document.getElementById("dataForm").addEventListener("submit", async function (e
 
   const formData = new FormData(this);
   const data = Object.fromEntries(formData.entries());
+
+  const res = await fetch(`${BASE_API_URL}/api/forms`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});
+
 
   // ✅ Validate metadata
   if (
