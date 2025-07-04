@@ -13,17 +13,26 @@
 </head>
 <body>
 
- <!-- 🔗 Navigation Bar -->
+<!-- 🔗 Responsive Navigation Bar -->
 <nav class="navbar">
-  <ul class="nav-links">
-    <li><a href="index.html">📝 Submit Form</a></li>
-    <li><a href="view.html">🔍 View Forms</a></li>
-    <li><a href="edit.html">✏️ Edit Form</a></li>
-    <li><a href="admin.html">🛠️ Admin</a></li>
-    <li><a href="#">📋 Action Plan</a></li>
-    <li><a href="#">🧪 Assessments</a></li>
-  </ul>
+  <div class="nav-container">
+    <div class="nav-logo">📋 Form System</div>
+
+    <!-- Hamburger icon (visible only on small screens) -->
+    <button class="menu-toggle" id="menuToggle">☰</button>
+
+    <!-- Navigation Links -->
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">📝 Submit Form</a></li>
+      <li><a href="view.html">🔍 View Forms</a></li>
+      <li><a href="edit.html">✏️ Edit Form</a></li>
+      <li><a href="admin.html">🛠️ Admin</a></li>
+      <li><a href="#">📋 Action Plan</a></li>
+      <li><a href="#">🧪 Assessments</a></li>
+    </ul>
+  </div>
 </nav>
+
 
 
   <div class="admin-dashboard">
@@ -126,7 +135,8 @@
   </div>
 </div>
 
-
+  <!--Custom js links-->
   <script src="admin.js"></script>
+  <script src="nav.js"></script
 </body>
 </html>
