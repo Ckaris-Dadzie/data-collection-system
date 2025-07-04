@@ -120,8 +120,9 @@ document.getElementById("loadBtn").addEventListener("click", async () => {
   }
 });
 
+
 // ==========================
-// 🧩 Populate Form for Editing
+// 🧩 Populate Form for Editing (Updated to disable question editing)
 // ==========================
 function populateFormForEditing(form, questions) {
   document.getElementById("editForm").style.display = "block";
@@ -129,6 +130,7 @@ function populateFormForEditing(form, questions) {
 
   document.getElementById("organisation_name").value = form.organisation_name;
   document.getElementById("project_name").value = form.project_name;
+  document.getElementById("programSearch").value = form.program;
   document.getElementById("region").value = form.region;
   document.getElementById("sub_municipal").value = form.sub_municipal;
 
@@ -170,16 +172,14 @@ function populateFormForEditing(form, questions) {
           <td>${q.question_number}</td>
           <td>${q.question_text}</td>
           <td>
-            <select class="answer-select">
-              <option value="">-- Select --</option>
+            <select class="answer-select" disabled>
               <option ${q.answer === "Yes" ? "selected" : ""}>Yes</option>
               <option ${q.answer === "No" ? "selected" : ""}>No</option>
               <option ${q.answer === "NA" ? "selected" : ""}>NA</option>
             </select>
           </td>
           <td>
-            <select class="remark-select">
-              <option value="">-- Select --</option>
+            <select class="remark-select" disabled>
               <option ${q.remark === "Poor" ? "selected" : ""}>Poor</option>
               <option ${q.remark === "Credit" ? "selected" : ""}>Credit</option>
               <option ${q.remark === "Good" ? "selected" : ""}>Good</option>
@@ -188,8 +188,7 @@ function populateFormForEditing(form, questions) {
             </select>
           </td>
           <td>
-            <select class="score-select">
-              <option value="">-- Select --</option>
+            <select class="score-select" disabled>
               ${[0, 1, 2, 3, 4, 5].map(s => `<option ${q.score == s ? "selected" : ""}>${s}</option>`).join("")}
             </select>
           </td>
@@ -201,7 +200,7 @@ function populateFormForEditing(form, questions) {
 }
 
 // ==========================
-// 📝 Handle Update (PUT)
+// 📝 Handle Update (PUT) – Now skips answers
 // ==========================
 document.getElementById("editForm").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -228,32 +227,8 @@ document.getElementById("editForm").addEventListener("submit", async (e) => {
     monitoring_team: metadata.monitoring_team,
     team_members: metadata.team_members,
     general_comments: metadata.general_comments,
-    answers: []
+    
   };
-
-  const questionRows = document.querySelectorAll(".question-row");
-  questionRows.forEach(row => {
-    const question_id = row.dataset.questionId;
-    const answer = row.querySelector(".answer-select").value;
-    const remark = row.querySelector(".remark-select").value;
-    const score = row.querySelector(".score-select").value;
-
-    if (question_id && answer && remark && score !== "") {
-      payload.answers.push({
-        question_id: parseInt(question_id),
-        answer,
-        remark,
-        score: parseInt(score)
-      });
-    }
-  });
-
-  if (payload.answers.length !== questionRows.length) {
-    alert("❌ Please complete all answer fields.");
-    return;
-  }
-
-  console.log("🧾 Payload being sent to backend:", payload);
 
   try {
     const res = await fetch(`${BASE_API_URL}/api/forms/${window.currentFormId}`, {
@@ -264,7 +239,7 @@ document.getElementById("editForm").addEventListener("submit", async (e) => {
 
     const result = await res.json();
     if (result.success) {
-      alert("✅ Form updated successfully!");
+      alert("✅ Form metadata and comments updated successfully!");
     } else {
       alert("❌ Failed to update form.");
     }
@@ -273,5 +248,3 @@ document.getElementById("editForm").addEventListener("submit", async (e) => {
     alert("❌ Error updating form. Check console.");
   }
 });
-
-
