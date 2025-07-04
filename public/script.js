@@ -169,13 +169,6 @@ document.getElementById("dataForm").addEventListener("submit", async function (e
   const formData = new FormData(this);
   const data = Object.fromEntries(formData.entries());
 
-  const res = await fetch(`${BASE_API_URL}/api/forms`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(payload)
-});
-
-
   // ✅ Validate metadata
   if (
     !data.monitoring_number ||
