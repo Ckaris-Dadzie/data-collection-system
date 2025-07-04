@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📋 Action Plan Form</title>
+  <!--custome css-->
+  <link rel="stylesheet" href="css/actionPlan.css" />
+  <link rel="stylesheet" href="nav.css" />
+
+
+</head>
+<body>
+
+    <!-- 🔗 Responsive Navigation Bar -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-logo">📋 Form System</div>
+
+    <!-- Hamburger icon (visible only on small screens) -->
+    <button class="menu-toggle" id="menuToggle">☰</button>
+
+    <!-- Navigation Links -->
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">📝 Submit Form</a></li>
+      <li><a href="view.html">🔍 View Forms</a></li>
+      <li><a href="edit.html">✏️ Edit Form</a></li>
+      <li><a href="admin.html">🛠️ Admin</a></li>
+      <li><a href="actionPlan.html">📋 Action Plan</a></li>
+      <li><a href="#">🧪 Assessments</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+
+
+  <h1>📝 Action Plan Form</h1>
+
+  <form id="actionPlanForm">
+    <!-- ============================== -->
+    <!-- 📍 Section 1: Metadata Fields -->
+    <!-- ============================== -->
+    <h2>Section 1: Facility Metadata</h2>
+    <label>Sub-Municipal:
+      <input type="text" id="sub_municipal" name="sub_municipal" required />
+    </label><br><br>
+
+    <label>Facility Name:
+      <input type="text" id="facility_name" name="facility_name" required />
+    </label><br><br>
+
+    <label>Quarter:
+      <select id="quarter" name="quarter" required>
+        <option value="">-- Select Quarter --</option>
+        <option value="First Quarter">First Quarter</option>
+        <option value="Second Quarter">Second Quarter</option>
+        <option value="Third Quarter">Third Quarter</option>
+        <option value="Fourth Quarter">Fourth Quarter</option>
+      </select>
+    </label><br><br>
+
+    <label>Date:
+      <input type="date" id="date" name="date" required />
+    </label><br><br>
+
+    <label>Name of Supervisor:
+      <input type="text" id="supervisor_name" name="supervisor_name" required />
+    </label><br><br>
+
+    <label>Name of Facility In-Charge:
+      <input type="text" id="in_charge_name" name="in_charge_name" required />
+    </label>
+
+    <!-- ============================== -->
+    <!-- 📌 Section 2: Action Table -->
+    <!-- ============================== -->
+    <h2>Section 2: Action Plan Table</h2>
+
+    <button type="button" class="btn btn-add" onclick="addActionRow()">➕ Add Row</button>
+
+    <table id="actionsTable">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Clinical/Technical Area</th>
+          <th>Challenges & Gaps</th>
+          <th>Proposed Changes/Actions</th>
+          <th>Indicator</th>
+          <th>Time Frame</th>
+          <th>Person Responsible</th>
+          <th>Resources Required</th>
+          <th>Next Assessment Date</th>
+          <th>❌</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- First row by default -->
+        <tr>
+          <td class="row-number">1</td>
+          <td><input type="text" /></td>
+          <td><textarea></textarea></td>
+          <td><textarea></textarea></td>
+          <td><input type="text" /></td>
+          <td><input type="text" /></td>
+          <td><input type="text" /></td>
+          <td><input type="text" /></td>
+          <td><input type="date" /></td>
+          <td><button type="button" class="btn btn-remove" onclick="removeActionRow(this)">🗑️</button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ============================== -->
+    <!-- 🚀 Submit Button -->
+    <!-- ============================== -->
+    <br><br>
+    <button type="submit" class="submit-btn">✅ Submit Action Plan</button>
+  </form>
+
+  <!-- ============================== -->
+  <!-- 📦 External JavaScript -->
+  <!-- ============================== -->
+  <script src="js/actionPlan.js"></script>
+  <script>
+    // ✅ Add new row to the table
+    function addActionRow() {
+      const table = document.getElementById("actionsTable").querySelector("tbody");
+      const rowCount = table.rows.length;
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td class="row-number">${rowCount + 1}</td>
+        <td><input type="text" /></td>
+        <td><textarea></textarea></td>
+        <td><textarea></textarea></td>
+        <td><input type="text" /></td>
+        <td><input type="text" /></td>
+        <td><input type="text" /></td>
+        <td><input type="text" /></td>
+        <td><input type="date" /></td>
+        <td><button type="button" class="btn btn-remove" onclick="removeActionRow(this)">🗑️</button></td>
+      `;
+      table.appendChild(row);
+    }
+
+    // ❌ Remove row and update numbers
+    function removeActionRow(button) {
+      const row = button.closest("tr");
+      row.remove();
+
+      // Re-number rows
+      const rows = document.querySelectorAll("#actionsTable tbody .row-number");
+      rows.forEach((td, index) => td.textContent = index + 1);
+    }
+  </script>
+</body>
+</html>

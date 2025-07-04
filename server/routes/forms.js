@@ -1,5 +1,3 @@
-
-
 //1. Main
 const express = require('express');
 const router = express.Router();
@@ -154,7 +152,7 @@ router.get('/search', async (req, res) => {
 
     // ✅ Get linked answers + question details (JOIN)
     const answerRes = await pool.query(`
-      SELECT q.question_number, q.question_text, a.answer, a.remark, a.score
+      SELECT q.id as question_id, q.question_number, q.question_text, a.answer, a.remark, a.score
       FROM answers a
       JOIN questions q ON a.question_id = q.id
       WHERE a.form_id = $1
@@ -174,7 +172,6 @@ router.get('/search', async (req, res) => {
 });
 
 module.exports = router;
-
 
 //======================================================
 //the code below handles the edit form for updating data 
@@ -198,7 +195,7 @@ router.put('/:id', async (req, res) => {
     monitoring_team,
     team_members,
     general_comments,
-    answers
+    answers // <- may be an empty array or undefined
   } = req.body;
 
   const client = await pool.connect();
@@ -206,7 +203,7 @@ router.put('/:id', async (req, res) => {
   try {
     await client.query('BEGIN');
 
-    // ✅ 1. Update metadata
+    // ✅ 1. Update only metadata + general comments
     await client.query(`
       UPDATE forms
       SET
@@ -241,43 +238,36 @@ router.put('/:id', async (req, res) => {
       formId
     ]);
 
-    // ✅ 2. Delete old answers
-    await client.query('DELETE FROM answers WHERE form_id = $1', [formId]);
-    console.log(`🗑️ Deleted old answers for form_id = ${formId}`);
+    // ✅ 2. Only update answers if answers were included and not empty
+    if (req.body.hasOwnProperty("answers")) {
+      if (Array.isArray(answers) && answers.length > 0) {
+        // Delete and reinsert only if new answers provided
+        await client.query('DELETE FROM answers WHERE form_id = $1', [formId]);
 
-    // ✅ 3. Insert new answers with logging
-    let insertedCount = 0;
-    if (Array.isArray(answers) && answers.length > 0) {
-      console.log("🧾 New answers received:", answers);
-      for (const ans of answers) {
-        const { question_id, answer, remark, score } = ans;
-
-        if (!question_id || !answer || !remark || score === undefined || score === "") {
-          console.warn("⚠️ Skipping incomplete answer:", ans);
-          continue;
+        for (const ans of answers) {
+          await client.query(`
+            INSERT INTO answers (form_id, question_id, answer, remark, score)
+            VALUES ($1, $2, $3, $4, $5)
+          `, [
+            formId,
+            ans.question_id,
+            ans.answer,
+            ans.remark,
+            ans.score
+          ]);
         }
-
-        console.log("➕ Inserting answer:", { formId, question_id, answer, remark, score });
-
-        await client.query(`
-          INSERT INTO answers (form_id, question_id, answer, remark, score)
-          VALUES ($1, $2, $3, $4, $5)
-        `, [formId, question_id, answer, remark, parseInt(score)]);
-
-        insertedCount++;
+      } else {
+        // ✅ answers is empty → do not delete anything
+        console.log("✅ No answers provided – skipping update to answers table.");
       }
     } else {
-      console.warn("⚠️ No valid answers received to insert.");
+      // ✅ "answers" not present in request → also do nothing
+      console.log("✅ Request has no 'answers' field – answers left untouched.");
     }
 
-    await client.query('COMMIT');
-    console.log(`✅ Updated form ${formId} with ${insertedCount} answers.`);
 
-    res.status(200).json({
-      success: true,
-      message: 'Form updated successfully',
-      insertedCount
-    });
+    await client.query('COMMIT');
+    res.status(200).json({ success: true, message: 'Form updated successfully' });
 
   } catch (err) {
     await client.query('ROLLBACK');
@@ -287,214 +277,4 @@ router.put('/:id', async (req, res) => {
     client.release();
   }
 });
-
-
-
-// //2. backup
-// // ✅ ✅ ✅ IMPORTANT: this PUT route must come BEFORE module.exports
-// // 🔁 PUT /api/forms/:id – Update form metadata and answers
-// router.put('/:id', async (req, res) => {
-//   const formId = req.params.id;
-//   const {
-//     monitoring_number,
-//     form_type,
-//     program,
-//     organisation_name,
-//     project_name,
-//     region,
-//     sub_municipal,
-//     facility_visited,
-//     location,
-//     respondents,
-//     monitoring_team,
-//     team_members,
-//     general_comments,
-//     answers
-//   } = req.body;
-
-//   const client = await pool.connect();
-
-//   try {
-//     await client.query('BEGIN');
-
-//     // ✅ 1. Update metadata
-//     await client.query(`
-//       UPDATE forms
-//       SET
-//         monitoring_number = $1,
-//         form_type = $2,
-//         program = $3,
-//         organisation_name = $4,
-//         project_name = $5,
-//         region = $6,
-//         sub_municipal = $7,
-//         facility_visited = $8,
-//         location = $9,
-//         respondents = $10,
-//         monitoring_team = $11,
-//         team_members = $12,
-//         general_comments = $13
-//       WHERE id = $14
-//     `, [
-//       monitoring_number,
-//       form_type,
-//       program,
-//       organisation_name,
-//       project_name,
-//       region,
-//       sub_municipal,
-//       facility_visited,
-//       location,
-//       respondents,
-//       monitoring_team,
-//       team_members,
-//       general_comments,
-//       formId
-//     ]);
-
-//     // ✅ 2. Delete old answers
-//     await client.query('DELETE FROM answers WHERE form_id = $1', [formId]);
-
-//     // ✅ 3. Insert updated answers
-//     if (Array.isArray(answers) && answers.length > 0) {
-//       for (const ans of answers) {
-//         await client.query(`
-//           INSERT INTO answers (form_id, question_id, answer, remark, score)
-//           VALUES ($1, $2, $3, $4, $5)
-//         `, [
-//           formId,
-//           ans.question_id,
-//           ans.answer,
-//           ans.remark,
-//           ans.score
-//         ]);
-//       }
-//     }
-
-//     await client.query('COMMIT');
-//     res.status(200).json({ success: true, message: 'Form updated successfully' });
-
-//   } catch (err) {
-//     await client.query('ROLLBACK');
-//     console.error('❌ Update error:', err);
-//     res.status(500).json({ success: false, message: 'Failed to update form' });
-//   } finally {
-//     client.release();
-//   }
-// });
-
-// module.exports = router;
-
-
-
-
-//1.
-// 🔁 PUT /api/forms/:id - Update form and answers
-// router.put("/:id", async (req, res) => {
-//   const formId = req.params.id;
-//   const {
-//     monitoring_number,
-//     form_type,
-//     program,
-//     organisation_name,
-//     project_name,
-//     region,
-//     sub_municipal,
-//     facility_visited,
-//     location,
-//     respondents,
-//     monitoring_team,
-//     team_members,
-//     general_comments,
-//     answers
-//   } = req.body;
-
-//   const client = await pool.connect();
-
-//   try {
-//     await client.query("BEGIN"); // Start transaction
-
-//     // 1️⃣ Update form metadata
-//     await client.query(
-//       `
-//       UPDATE forms
-//       SET monitoring_number = $1,
-//           form_type = $2,
-//           program = $3,
-//           organisation_name = $4,
-//           project_name = $5,
-//           region = $6,
-//           sub_municipal = $7,
-//           facility_visited = $8,
-//           location = $9,
-//           respondents = $10,
-//           monitoring_team = $11,
-//           team_members = $12,
-//           general_comments = $13
-//       WHERE id = $14
-//       `,
-//       [
-//         monitoring_number,
-//         form_type,
-//         program,
-//         organisation_name,
-//         project_name,
-//         region,
-//         sub_municipal,
-//         facility_visited,
-//         location,
-//         respondents,
-//         monitoring_team,
-//         team_members,
-//         general_comments,
-//         formId
-//       ]
-//     );
-
-//     // 2️⃣ Delete old answers
-//     await client.query(`DELETE FROM answers WHERE form_id = $1`, [formId]);
-
-//     // 3️⃣ Insert updated answers
-//     console.log("🧾 New answers received:", answers);
-
-//     if (Array.isArray(answers) && answers.length > 0) {
-//       for (const ans of answers) {
-//         const { question_id, answer, remark, score } = ans;
-
-//         console.log("🔁 Inserting answer:", {
-//           formId,
-//           question_id,
-//           answer,
-//           remark,
-//           score
-//         });
-
-//         await client.query(
-//           `
-//           INSERT INTO answers (form_id, question_id, answer, remark, score)
-//           VALUES ($1, $2, $3, $4, $5)
-//           `,
-//           [formId, question_id, answer, remark, score]
-//         );
-//       }
-//     } else {
-//       console.warn("⚠️ No answers received to insert.");
-//     }
-
-//     await client.query("COMMIT");
-//     res.status(200).json({
-//       success: true,
-//       message: "Form updated successfully",
-//       inserted: answers?.length || 0
-//     });
-
-//   } catch (err) {
-//     await client.query("ROLLBACK");
-//     console.error("❌ Error during update:", err);
-//     res.status(500).json({ success: false, message: "Failed to update form" });
-//   } finally {
-//     client.release();
-//   }
-// });
-
 

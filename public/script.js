@@ -19,43 +19,19 @@ const facilities = {
                 ]
 };
 
-// 2. Program questions mapping (not used in fetch mode, but left for reference)
-const programQuestions = {
-  "Clinical Care": [
-    "Availability of standard treatment guideline",
-    "Availability of diagnostic equipment",
-    "Adherence to clinical protocols",
-    "Adequate staff at the facility",
-    "Proper infection control measures",
-    "Availability of emergency drugs",
-    "Functioning referral system",
-    "Patient confidentiality maintained"
-  ],
-  "Nutrition Services": [
-    "Availability of growth monitoring tools",
-    "Availability of vitamin A supplements",
-    "Adequate nutrition counseling",
-    "Linkage with community-based services",
-    "Record-keeping for malnourished children",
-    "Availability of therapeutic foods",
-    "Proper storage of nutrition commodities"
-  ],
-  "Health Promotion": [
-    "Use of IEC materials",
-    "Community health education activities",
-    "Availability of health education plan",
-    "Monitoring of health promotion activities"
-  ]
-};
+// 🔁 Smart backend base URL
+const BASE_API_URL = window.location.hostname.includes("localhost")
+  ? "http://localhost:5000"
+  : "https://data-collection-system.onrender.com";
 
-// 3. DOM references
+// 2. DOM references
 const subMunicipal = document.getElementById("subMunicipal");
 const facilityVisited = document.getElementById("facility_visited");
 const locationField = document.getElementById("location");
 const programSelect = document.getElementById("program");
 const questionContainer = document.getElementById("questionsTableBody");
 
-// 4. Update facility dropdown and location field based on Sub-Municipal
+// 3. Update facility dropdown and location field based on Sub-Municipal
 subMunicipal.addEventListener("change", () => {
   const selected = subMunicipal.value;
   locationField.value = selected;
@@ -71,13 +47,12 @@ subMunicipal.addEventListener("change", () => {
   }
 });
 
-// 5. Generate question table dynamically
+// 4. Generate question table dynamically
 function generateQuestions(questions) {
   questionContainer.innerHTML = ""; // Clear old questions
 
   const table = document.createElement("table");
 
-  // Table headers
   const thead = document.createElement("thead");
   thead.innerHTML = `
     <tr>
@@ -137,12 +112,12 @@ function generateQuestions(questions) {
   questionContainer.appendChild(table);
 }
 
-// 6. Load questions from backend when program changes
+// 5. Load questions from backend when program changes
 programSelect.addEventListener("change", () => {
   const selectedProgram = programSelect.value;
   if (!selectedProgram) return;
 
-  fetch(`http://localhost:5000/api/forms/questions/${encodeURIComponent(selectedProgram)}`)
+  fetch(`${BASE_API_URL}/api/forms/questions/${encodeURIComponent(selectedProgram)}`)
     .then(res => res.json())
     .then(questions => {
       if (questions.length > 0) {
@@ -157,11 +132,10 @@ programSelect.addEventListener("change", () => {
     });
 });
 
-// 7. Submit form with metadata + answers
+// 6. Submit form with metadata + answers
 document.getElementById("dataForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  // Convert form to key-value object
   const formData = new FormData(this);
   const data = Object.fromEntries(formData.entries());
 
@@ -206,7 +180,7 @@ document.getElementById("dataForm").addEventListener("submit", async function (e
       row.style.border = "";
     }
 
-    // ✅ Use collected values directly
+    console.log({ question_id, answer, remark, score });
     answers.push({
       question_id: parseInt(question_id),
       answer,
@@ -223,14 +197,16 @@ document.getElementById("dataForm").addEventListener("submit", async function (e
     return;
   }
 
-  // 🔄 Submit payload
+  // 🔄 Prepare payload
   const payload = {
     ...data,
-    answers
+    answers,
   };
 
+  // ✅ Submit to backend
+  console.log("Payload to send:", payload);
   try {
-    const res = await fetch("http://localhost:5000/api/forms", {
+    const res = await fetch(`${BASE_API_URL}/api/forms`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -250,108 +226,3 @@ document.getElementById("dataForm").addEventListener("submit", async function (e
     alert("❌ Error submitting form. Check console for details.");
   }
 });
-
-
-// // 6. Submit form with metadata + answers
-// document.getElementById("dataForm").addEventListener("submit", async function (e) {
-//   e.preventDefault();
-
-//   // Convert form data to an object
-//   const formData = new FormData(this);
-//   const data = Object.fromEntries(formData.entries());
-
-//   // ✅ Required field validation for Metadata (Step 1)
-//   if (
-//     !data.monitoring_number ||
-//     !data.form_type ||
-//     !data.program ||
-//     !data.sub_municipal ||
-//     !data.facility_visited ||
-//     !data.respondents ||
-//     !data.team_members
-//   ) {
-//     alert("❌ Please fill all required metadata fields in Step 1.");
-//     return;
-//   }
-
-//   // ✅ Required field validation for General Comments (Step 3)
-//   if (!data.general_comments || data.general_comments.trim() === "") {
-//     alert("❌ Please enter general comments in Step 3.");
-//     return;
-//   }
-
-//   // ✅ Collect answers (Step 2 compulsory now! )
-//   const questionRows = document.querySelectorAll("#questionsTableBody table tbody tr");
-//   const answers = [];
-
-//   questionRows.forEach((row, index) => {
-//     const question_number = row.querySelector(".question-number")?.textContent || index + 1;
-//     const question_text = row.querySelector(".question-text")?.textContent.trim();
-//     const answer = row.querySelector(`[name="answer_${index}"]`)?.value;
-//     const remark = row.querySelector(`[name="remarks_${index}"]`)?.value;
-//     const score = row.querySelector(`[name="score_${index}"]`)?.value;
-
-//     // The code below validate the questons, answers, remarks, and score fields.
-
-  
-// // // ✅ Track if any field is missing and stop repeating alerts
-// // let isValid = true;
-
-// // // ✅ Clear previous highlights
-// // questionRows.forEach(row => row.style.border = "");
-
-// // // Loop through all questions
-// // questionRows.forEach((row, index) => {
-// //   const question_number = row.querySelector(".question-number")?.textContent || index + 1;
-// //   const question_text = row.querySelector(".question-text")?.textContent.trim();
-// //   const answer = row.querySelector(`[name="answer_${index}"]`)?.value;
-// //   const remark = row.querySelector(`[name="remarks_${index}"]`)?.value;
-// //   const score = row.querySelector(`[name="score_${index}"]`)?.value;
-
-// //   // ✅ If any of the 3 fields are missing, mark invalid once
-// //   if (!answer || !remark || !score) {
-// //     isValid = false;
-// //     row.style.border = "2px solid red"; // Highlight row with error
-// //   }
-
-// //   // Still collect the answer for submission
-// //   answers.push({ question_number, question_text, answer, remark, score });
-// // });
-
-// // // ✅ Show only ONE alert if any row is incomplete
-// // if (questionRows.length > 0 && !isValid) {
-// //   alert("❌ Please complete all questions: Answer, Remarks, and Score.");
-// //   return;
-// // }
-
-//   });
-
-//   const payload = {
-//     ...data,
-//     answers
-//   };
-
-//   // Submit to backend
-//   try {
-//     const res = await fetch("http://localhost:5000/api/forms", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(payload)
-//     });
-
-//     const result = await res.json();
-
-//     if (result.success) {
-//       alert("✅ Form and answers submitted successfully!");
-//       this.reset(); // Clear form
-//       questionContainer.innerHTML = ""; // Clear questions table
-//     } else {
-//       throw new Error(result.message || "Submission failed.");
-//     }
-//   } catch (err) {
-//     console.error("❌ Error submitting form:", err);
-//     alert("❌ Error submitting form. Check console for details.");
-//   }
-// });
-
-

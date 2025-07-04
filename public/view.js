@@ -36,6 +36,12 @@ document.getElementById("subMunicipalFilter").addEventListener("change", () => {
   }
 });
 
+
+
+const BASE_API_URL = window.location.hostname.includes("localhost")
+  ? "http://localhost:5000"
+  : "https://data-collection-system.onrender.com";
+
 // 🔁 Handle Search button click
 document.getElementById("searchBtn").addEventListener("click", async () => {
   const formType = document.getElementById("formTypeFilter").value;

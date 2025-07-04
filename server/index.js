@@ -4,6 +4,9 @@ const cors = require('cors');
 const pool = require('./db'); // PostgreSQL connection
 const formRoutes = require('./routes/forms');
 const adminRoutes = require('./routes/admin');
+const actionPlanRoutes = require('./routes/actionPlan');
+
+
 
 const app = express();
 
@@ -15,6 +18,9 @@ app.use(express.json());
 
 // 📦 Mount form-related routes
 app.use('/api/forms', formRoutes);
+
+//for action plan 
+app.use('/api/action-plan', actionPlanRoutes);
 
 // 🛠 Mount admin-related routes
 app.use('/api/admin', adminRoutes);
