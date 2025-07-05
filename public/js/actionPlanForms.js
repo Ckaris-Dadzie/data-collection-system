@@ -56,3 +56,55 @@ document.getElementById("actionPlanForm").addEventListener("submit", async funct
     alert("❌ Network error.");
   }
 });
+
+// ==========================
+// ➕ Add a New Action Row
+// ==========================
+function addActionRow() {
+  const tableBody = document.querySelector("#actionsTable tbody");
+
+  // Create a new row element
+  const newRow = document.createElement("tr");
+
+  // Set inner HTML for the new row with empty input fields
+  newRow.innerHTML = `
+    <td class="row-number"></td>
+    <td><input type="text" /></td>
+    <td><textarea></textarea></td>
+    <td><textarea></textarea></td>
+    <td><input type="text" /></td>
+    <td><input type="text" /></td>
+    <td><input type="text" /></td>
+    <td><input type="text" /></td>
+    <td><input type="date" /></td>
+    <td><button type="button" class="btn btn-remove" onclick="removeActionRow(this)">🗑️</button></td>
+  `;
+
+  // Append the new row to the table
+  tableBody.appendChild(newRow);
+
+  // Renumber all rows after adding
+  updateRowNumbers();
+}
+
+// ==========================
+// ❌ Remove a Row from Table
+// ==========================
+function removeActionRow(button) {
+  // Remove the row containing the clicked delete button
+  const row = button.closest("tr");
+  row.remove();
+
+  // Renumber remaining rows
+  updateRowNumbers();
+}
+
+// ==========================
+// 🔢 Update Row Numbering
+// ==========================
+function updateRowNumbers() {
+  const rows = document.querySelectorAll("#actionsTable tbody tr");
+  rows.forEach((row, index) => {
+    row.querySelector(".row-number").textContent = index + 1;
+  });
+}
