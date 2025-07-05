@@ -103,4 +103,34 @@ const {
   }
 });
 
+
+//=============================
+// ✅ DELETE /api/action-plan/:id
+//=============================
+router.delete('/:id', async (req, res) => {
+  const planId = req.params.id;
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    // Delete from child table first
+    await client.query('DELETE FROM action_items WHERE form_id = $1', [planId]);
+
+    // Then delete parent
+    await client.query('DELETE FROM action_plans WHERE id = $1', [planId]);
+
+    await client.query('COMMIT');
+    res.status(200).json({ success: true, message: "Deleted successfully" });
+
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error("❌ Delete error:", err);
+    res.status(500).json({ success: false, message: "Delete failed", error: err.message });
+  } finally {
+    client.release();
+  }
+});
+
+
 module.exports = router;
