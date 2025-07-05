@@ -60,8 +60,7 @@
       <option value="">-- Select Facility --</option>
     </select>
   </label><br><br>
-    <label>Monitoring Number:
-      <input type="text" id="monitoring_number" name="monitoring_number" placeholder="e.g. 2025-001" required />
+
 
     <label>Quarter:
       <select id="quarter" name="quarter" required>
@@ -74,7 +73,8 @@
     </label><br><br>
 
     <label id="monitoring">Monitoring Year:
-      <input type="number" id="monitoring_year" name="monitoring_year" required width="100%" padding="8px" />
+      <input type="number" id="monitoring_year" placeholder="e.g. 2025" name="monitoring_year" min="2000" max="2100" required
+    style="width: 100%; padding: 8px; margin-top: 4px; margin-bottom: 16px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;" />
     </label><br><br>
 
     <label>Date:
@@ -82,11 +82,11 @@
     </label><br><br>
 
     <label>Name of Supervisor:
-      <input type="text" id="supervisor_name" name="supervisor_name" required />
+      <input type="text" id="supervisor_name" placeholder="e.g. Mustapha Dadzie" name="supervisor_name" required />
     </label><br><br>
 
     <label>Name of Facility In-Charge:
-      <input type="text" id="in_charge_name" name="in_charge_name" required />
+      <input type="text" id="in_charge_name" placeholder="e.g. Bernard Frimpong" name="in_charge_name" required />
     </label>
 
     <!-- ============================== -->
