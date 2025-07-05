@@ -26,6 +26,7 @@ label {
 
 input[type="text"],
 input[type="date"],
+input[type="number"],
 select,
 textarea {
   width: 100%;
@@ -36,6 +37,11 @@ textarea {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
+input[type="number"]#monitoring_year {
+  background-color: #f0f8ff; /* light blue */
+}
+
 
 textarea {
   resize: vertical;
