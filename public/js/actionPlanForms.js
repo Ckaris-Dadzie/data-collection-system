@@ -1,3 +1,31 @@
+
+// 🌍 Mapping: Sub-Municipal ➡ Facility List
+const facilityMap = {
+  "Kotobabi": ["Anthon Memorial Hospital", "Effan Victory Clinic", "Life View Medical Hospital"],
+  "Accra New Town": ["Ghanuba Specialist Hospital", "Medylife Healthcare (Clinix)"],
+  "Alajo": ["Richsound"],
+  "Kokomlemle": ["Tip Toe CHPS", "Tobinco", "Entrance University Hospital"]
+};
+
+document.getElementById("sub_municipal").addEventListener("change", function () {
+  const subMunicipal = this.value;
+  const facilitySelect = document.getElementById("facility_name");
+
+  // Clear current options
+  facilitySelect.innerHTML = '<option value="">-- Select Facility --</option>';
+
+  // Populate new options
+  if (facilityMap[subMunicipal]) {
+    facilityMap[subMunicipal].forEach(facility => {
+      const option = document.createElement("option");
+      option.value = facility;
+      option.textContent = facility;
+      facilitySelect.appendChild(option);
+    });
+  }
+});
+
+
 // ==========================
 // 📤 Submit Action Plan Form
 // ==========================
@@ -29,11 +57,13 @@ document.getElementById("actionPlanForm").addEventListener("submit", async funct
     sub_municipal: document.getElementById("sub_municipal").value,
     facility_name: document.getElementById("facility_name").value,
     quarter: document.getElementById("quarter").value,
+    monitoring_year: document.getElementById("monitoring_year").value,
     date: document.getElementById("date").value,
     supervisor_name: document.getElementById("supervisor_name").value,
     in_charge_name: document.getElementById("in_charge_name").value,
     actions
   };
+
 
   console.log("📤 Submitting payload:", payload);
 

@@ -44,13 +44,24 @@
     <!-- 📍 Section 1: Metadata Fields -->
     <!-- ============================== -->
     <h2>Section 1: Facility Metadata</h2>
-    <label>Sub-Municipal:
-      <input type="text" id="sub_municipal" name="sub_municipal" required />
-    </label><br><br>
 
-    <label>Facility Name:
-      <input type="text" id="facility_name" name="facility_name" required />
-    </label><br><br>
+   <label>Sub-Municipal:
+    <select id="sub_municipal" name="sub_municipal" required>
+      <option value="">-- Select Sub-Municipal --</option>
+      <option value="Kotobabi">Kotobabi</option>
+      <option value="Accra New Town">Accra New Town</option>
+      <option value="Alajo">Alajo</option>
+      <option value="Kokomlemle">Kokomlemle</option>
+    </select>
+  </label><br><br>
+
+  <label>Facility Name:
+    <select id="facility_name" name="facility_name" required>
+      <option value="">-- Select Facility --</option>
+    </select>
+  </label><br><br>
+    <label>Monitoring Number:
+      <input type="text" id="monitoring_number" name="monitoring_number" placeholder="e.g. 2025-001" required />
 
     <label>Quarter:
       <select id="quarter" name="quarter" required>
@@ -60,6 +71,10 @@
         <option value="Third Quarter">Third Quarter</option>
         <option value="Fourth Quarter">Fourth Quarter</option>
       </select>
+    </label><br><br>
+
+    <label>Monitoring Year:
+      <input type="number" id="monitoring_year" name="monitoring_year" required min="2000" max="2100" />
     </label><br><br>
 
     <label>Date:

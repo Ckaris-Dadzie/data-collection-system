@@ -10,15 +10,16 @@ router.post('/', async (req, res) => {
   console.log("Request body:", req.body);
 
   // Validate request body
-  const requiredFields = [
-    'sub_municipal',
-    'facility_name',
-    'quarter',
-    'date',
-    'supervisor_name',
-    'in_charge_name',
-    'actions'
-  ];
+ const requiredFields = [
+  'sub_municipal',
+  'facility_name',
+  'quarter',
+  'monitoring_year',
+  'date',
+  'supervisor_name',
+  'in_charge_name',
+  'actions'
+];
   for (const field of requiredFields) {
     if (!(field in req.body)) {
       console.error(`❌ Missing required field: ${field}`);
@@ -26,15 +27,17 @@ router.post('/', async (req, res) => {
     }
   }
 
-  const {
-    sub_municipal,
-    facility_name,
-    quarter,
-    date,
-    supervisor_name,
-    in_charge_name,
-    actions
-  } = req.body;
+const {
+  sub_municipal,
+  facility_name,
+  quarter,
+  monitoring_year,
+  date,
+  supervisor_name,
+  in_charge_name,
+  actions
+} = req.body;
+
 
   if (!Array.isArray(actions) || actions.length === 0) {
     console.error('❌ Actions array is missing or empty');
@@ -52,11 +55,17 @@ router.post('/', async (req, res) => {
     // 1️⃣ Insert metadata into action_plans
     const formInsert = await client.query(`
       INSERT INTO action_plans (
-        sub_municipal, facility_name, quarter, date, supervisor_name, in_charge_name
-      ) VALUES ($1, $2, $3, $4, $5, $6)
+        sub_municipal, facility_name, quarter, monitoring_year, date, supervisor_name, in_charge_name
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING id
     `, [
-      sub_municipal, facility_name, quarter, date, supervisor_name, in_charge_name
+        sub_municipal,
+        facility_name,
+        quarter,
+        monitoring_year,     
+        date,
+        supervisor_name,
+        in_charge_name
     ]);
     console.log("✅ Form inserted:", formInsert.rows[0]);
 
