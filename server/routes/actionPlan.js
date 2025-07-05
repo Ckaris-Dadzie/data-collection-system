@@ -133,4 +133,44 @@ router.delete('/:id', async (req, res) => {
 });
 
 
+// =============================
+// ✅ GET /api/action-plan/view
+// =============================
+router.get('/view', async (req, res) => {
+  const { sub_municipal, facility_name, quarter, monitoring_year } = req.query;
+
+  try {
+    const client = await pool.connect();
+
+    // 1️⃣ Find the matching action plan
+    const planResult = await client.query(`
+      SELECT * FROM action_plans
+      WHERE sub_municipal = $1 AND facility_name = $2 AND quarter = $3 AND monitoring_year = $4
+      LIMIT 1
+    `, [sub_municipal, facility_name, quarter, monitoring_year]);
+
+    if (planResult.rows.length === 0) {
+      return res.status(404).json({ success: false, message: "No matching action plan found", plans: [] });
+    }
+
+    const plan = planResult.rows[0];
+
+    // 2️⃣ Fetch action items for the plan
+    const actionItemsResult = await client.query(`
+      SELECT * FROM action_items WHERE form_id = $1
+    `, [plan.id]);
+
+    // Add the actions to the plan object
+    plan.actions = actionItemsResult.rows;
+
+    res.status(200).json({ success: true, plans: [plan] });
+
+    client.release();
+  } catch (err) {
+    console.error("❌ Error fetching action plan:", err.stack || err);
+    res.status(500).json({ success: false, message: "Failed to retrieve action plan", error: err.message });
+  }
+});
+
+
 module.exports = router;
