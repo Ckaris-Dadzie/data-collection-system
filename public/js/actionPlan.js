@@ -1,6 +1,10 @@
 // ==========================
 // 📤 Submit Action Plan Form
 // ==========================
+const BASE_API_URL = window.location.hostname.includes("localhost")
+  ? "http://localhost:5000"
+  : "https://data-collection-system.onrender.com";
+
 document.getElementById("actionPlanForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
@@ -34,7 +38,7 @@ document.getElementById("actionPlanForm").addEventListener("submit", async funct
   console.log("📤 Submitting payload:", payload);
 
   try {
-    const res = await fetch("/api/action-plan", {
+    const res = await fetch(`${BASE_API_URL}/api/action-plan`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)

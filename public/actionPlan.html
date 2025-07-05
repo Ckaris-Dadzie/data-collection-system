@@ -121,38 +121,7 @@
   <!-- ============================== -->
   <!-- 📦 External JavaScript -->
   <!-- ============================== -->
-  <script src="js/actionPlan.js"></script>
-  <script>
-    // ✅ Add new row to the table
-    function addActionRow() {
-      const table = document.getElementById("actionsTable").querySelector("tbody");
-      const rowCount = table.rows.length;
-
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td class="row-number">${rowCount + 1}</td>
-        <td><input type="text" /></td>
-        <td><textarea></textarea></td>
-        <td><textarea></textarea></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-        <td><input type="date" /></td>
-        <td><button type="button" class="btn btn-remove" onclick="removeActionRow(this)">🗑️</button></td>
-      `;
-      table.appendChild(row);
-    }
-
-    // ❌ Remove row and update numbers
-    function removeActionRow(button) {
-      const row = button.closest("tr");
-      row.remove();
-
-      // Re-number rows
-      const rows = document.querySelectorAll("#actionsTable tbody .row-number");
-      rows.forEach((td, index) => td.textContent = index + 1);
-    }
-  </script>
+  <script src="js/actionPlanForms.js"></script>
+  <script src="nav.js"></script>
 </body>
 </html>

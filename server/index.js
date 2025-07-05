@@ -1,3 +1,4 @@
+// ✅ index.js loaded and running
 // server/index.js
 const express = require('express');
 const cors = require('cors');
@@ -41,4 +42,11 @@ const PORT = process.env.PORT || 5000;
 // 🚀 Start the server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  console.log("🚦 Server started and ready to receive requests");
+});
+
+// Test route for debugging
+app.get('/test', (req, res) => {
+  console.log("✅ /test route hit");
+  res.json({ success: true });
 });

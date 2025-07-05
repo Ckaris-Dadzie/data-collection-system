@@ -5,6 +5,27 @@ const pool = require('../db'); // make sure your pool is set up for PostgreSQL o
 
 // ✅ POST /api/action-plan
 router.post('/', async (req, res) => {
+  console.log("🔔 /api/action-plan route hit");
+  console.log("Headers:", req.headers);
+  console.log("Request body:", req.body);
+
+  // Validate request body
+  const requiredFields = [
+    'sub_municipal',
+    'facility_name',
+    'quarter',
+    'date',
+    'supervisor_name',
+    'in_charge_name',
+    'actions'
+  ];
+  for (const field of requiredFields) {
+    if (!(field in req.body)) {
+      console.error(`❌ Missing required field: ${field}`);
+      return res.status(400).json({ success: false, message: `Missing required field: ${field}` });
+    }
+  }
+
   const {
     sub_municipal,
     facility_name,
@@ -15,27 +36,36 @@ router.post('/', async (req, res) => {
     actions
   } = req.body;
 
+  if (!Array.isArray(actions) || actions.length === 0) {
+    console.error('❌ Actions array is missing or empty');
+    return res.status(400).json({ success: false, message: 'Actions array is missing or empty' });
+  }
+
   const client = await pool.connect();
+  const dbNameResult = await client.query('SELECT current_database()');
+  console.log('🗄️ Connected to database:', dbNameResult.rows[0].current_database);
+  console.log("🔗 Database connection established");
 
   try {
     await client.query('BEGIN');
 
-    // 1️⃣ Insert metadata into action_plan_forms
+    // 1️⃣ Insert metadata into action_plans
     const formInsert = await client.query(`
-      INSERT INTO action_plan_forms (
+      INSERT INTO action_plans (
         sub_municipal, facility_name, quarter, date, supervisor_name, in_charge_name
       ) VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING id
     `, [
       sub_municipal, facility_name, quarter, date, supervisor_name, in_charge_name
     ]);
+    console.log("✅ Form inserted:", formInsert.rows[0]);
 
     const formId = formInsert.rows[0].id;
 
     // 2️⃣ Insert each action row
     for (const act of actions) {
       await client.query(`
-        INSERT INTO action_plan_actions (
+        INSERT INTO action_items (
           form_id, clinical_area, challenges, proposed_changes,
           indicator, time_frame, person_responsible, resources, next_assessment
         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
@@ -57,8 +87,8 @@ router.post('/', async (req, res) => {
 
   } catch (err) {
     await client.query('ROLLBACK');
-    console.error('❌ Action Plan Error:', err);
-    res.status(500).json({ success: false, message: 'Failed to submit action plan' });
+    console.error('❌ Action Plan Error:', err.stack || err);
+    res.status(500).json({ success: false, message: 'Failed to submit action plan', error: err.message });
   } finally {
     client.release();
   }
