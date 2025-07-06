@@ -26,6 +26,12 @@ form label {
   font-weight: bold;
 }
 
+label{
+  display: block;
+  margin-top: 15px; 
+  font-weight: 500;
+}
+
 form input, form select, form textarea {
   width: 100%;
   padding: 10px;
