@@ -98,3 +98,9 @@ td input, td textarea {
 .submit-btn:hover {
   background-color: #1976d2;
 }
+
+@media (max-width: 768px) {
+   h1{
+    font-size: 30px;
+  }
+}

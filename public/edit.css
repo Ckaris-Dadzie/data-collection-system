@@ -1,12 +1,12 @@
 body {
   font-family: Arial, sans-serif;
   background: #f5f7fb;
-  padding: 20px;
+  padding: 10px;
   color: #333;
 }
 
-.container {
-  max-width: 900px;
+.edit-container {
+  max-width: 100%;
   margin: auto;
   background: #fff;
   padding: 25px 40px;
@@ -46,4 +46,12 @@ button {
 
 button:hover {
   background-color: #2980b9;
+}
+
+
+@media (max-width: 768px) {
+  .edit-container h1{
+    font-size: 20px;
+    padding-bottom: 10px;
+  }
 }

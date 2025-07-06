@@ -4,7 +4,7 @@
 
 body {
   font-family: Arial, sans-serif;
-  padding: 20px;
+  padding: 10px;
   background-color: #f9f9f9;
 }
 
@@ -103,4 +103,10 @@ td input, td textarea {
 
 .submit-btn:hover {
   background-color: #1976d2;
+}
+
+@media (max-width: 768px) {
+   h1{
+    font-size: 30px;
+  }
 }
