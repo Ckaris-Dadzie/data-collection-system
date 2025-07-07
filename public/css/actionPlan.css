@@ -104,3 +104,17 @@ td input, td textarea {
     font-size: 30px;
   }
 }
+
+/* Print styles */
+@media print {
+  .navbar{
+    display: none;
+  }
+  h1{
+    display: none;
+  }
+  #sub_municipal, #facility_name, #quarter, #monitoring_year {
+    display: none;
+  }
+
+}
