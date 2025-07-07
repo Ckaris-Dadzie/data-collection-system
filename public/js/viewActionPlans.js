@@ -80,9 +80,9 @@ async function searchActionPlans() {
 
       <div style="display: flex; justify-content: center;gap:30px; text-align: center; font-size: 18px; margin-top:-30px">
       <p><strong>Supervisor:</strong> ${plan.supervisor_name}</p>
-      <p><strong>Sing:</strong>....................</p>
+      <p><strong>Sign:</strong>....................</p>
       <p><strong>Facility In-Charge:</strong> ${plan.in_charge_name}</p>
-      <p><strong>Sing:</strong>....................</p>
+      <p><strong>Sign:</strong>....................</p>
       </div>
 
       <h3>🛠 Action Items</h3>

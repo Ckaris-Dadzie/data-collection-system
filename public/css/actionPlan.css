@@ -113,7 +113,7 @@ td input, td textarea {
   h1{
     display: none;
   }
-  #sub_municipal, #facility_name, #quarter, #monitoring_year, #search, label,  {
+  #sub_municipal, #facility_name, #quarter, #monitoring_year, #search, label  {
     display: none;
   }
 

@@ -219,13 +219,16 @@ document.getElementById("dataForm").addEventListener("submit", async function (e
     });
   });
 
-  if (questionRows.length > 0 && hasErrors) {
-    alert("❌ Please complete all questions (Answer, Remark, and Score).");
-    if (firstInvalidRow) {
-      firstInvalidRow.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-    return;
-  }
+  //=============================================
+  //THIS PART ENABLES THE VALIDATION OF QUESTIONS
+  //==============================================
+  // if (questionRows.length > 0 && hasErrors) {
+  //   alert("❌ Please complete all questions (Answer, Remark, and Score).");
+  //   if (firstInvalidRow) {
+  //     firstInvalidRow.scrollIntoView({ behavior: "smooth", block: "center" });
+  //   }
+  //   return;
+  // }
 
   // 🔄 Prepare payload
   const payload = {
