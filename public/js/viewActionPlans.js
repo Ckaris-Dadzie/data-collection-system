@@ -68,14 +68,22 @@ async function searchActionPlans() {
 
     // 🎨 Build the result HTML
     let html = `
-      <h2>📌 Action Plan Details</h2>
+      <h1>📋 AYAWASO CENTRAL MUNICIPAL HEALTH DIRECTORATE</h1>
+      <h2 style="text-align: center;font-size:30px; margin-top:-20px">
+      📌 ACTION PLAN FOR ISS "<strong>${plan.quarter}</strong>"  ${plan.monitoring_year}</h2>
+
+      <div style="display: flex; justify-content: center;gap:30px; text-align: center; font-size: 18px; margin-top:-30px"> 
       <p><strong>Sub-Municipal:</strong> ${plan.sub_municipal}</p>
       <p><strong>Facility Name:</strong> ${plan.facility_name}</p>
-      <p><strong>Quarter:</strong> ${plan.quarter}</p>
-      <p><strong>Year:</strong> ${plan.monitoring_year}</p>
       <p><strong>Date:</strong> ${plan.date}</p>
+      </div>
+
+      <div style="display: flex; justify-content: center;gap:30px; text-align: center; font-size: 18px; margin-top:-30px">
       <p><strong>Supervisor:</strong> ${plan.supervisor_name}</p>
+      <p><strong>Sing:</strong>....................</p>
       <p><strong>Facility In-Charge:</strong> ${plan.in_charge_name}</p>
+      <p><strong>Sing:</strong>....................</p>
+      </div>
 
       <h3>🛠 Action Items</h3>
       <table>
