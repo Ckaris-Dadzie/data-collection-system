@@ -4,35 +4,43 @@ const router = express.Router();
 const pool = require('../db');
 
 // =============================
-// 🔍 GET /api/edit-action-plan/search?sub_municipal=...&facility_name=...&quarter=...&monitoring_year=...
+// ✅ Search for Action Plan by Sub-Municipal, Facility, Quarter & Year
 // =============================
 router.get('/search', async (req, res) => {
   const { sub_municipal, facility_name, quarter, monitoring_year } = req.query;
 
   try {
+    // 1️⃣ Search the action plan based on the four filters
     const result = await pool.query(`
       SELECT * FROM action_plans 
       WHERE sub_municipal = $1 AND facility_name = $2 AND quarter = $3 AND monitoring_year = $4
+      LIMIT 1
     `, [sub_municipal, facility_name, quarter, monitoring_year]);
 
+    // 2️⃣ If not found, return a 404
     if (result.rows.length === 0) {
-      return res.status(404).json({ message: "Not found" });
+      return res.status(404).json({ success: false, message: "No matching action plan found" });
     }
 
     const plan = result.rows[0];
 
-    const actions = await pool.query(`
+    // 3️⃣ Fetch the associated action items
+    const actionsResult = await pool.query(`
       SELECT * FROM action_items WHERE form_id = $1
     `, [plan.id]);
 
-    plan.actions = actions.rows;
+    // 4️⃣ Attach actions to the main plan object
+    plan.actions = actionsResult.rows;
 
-    res.json(plan);
+    // 5️⃣ Return success with plan and actions
+    res.status(200).json({ success: true, plan });
+
   } catch (err) {
-    console.error("❌ Search failed:", err);
-    res.status(500).json({ message: "Server error" });
+    console.error("❌ Error searching for action plan:", err.stack || err);
+    res.status(500).json({ success: false, message: "Server error", error: err.message });
   }
 });
+
 
 
 // =============================
