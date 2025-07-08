@@ -6,6 +6,7 @@ const pool = require('./db'); // PostgreSQL connection
 const formRoutes = require('./routes/forms');
 const adminRoutes = require('./routes/admin');
 const actionPlanRoutes = require('./routes/actionPlan');
+const editActionPlanRoutes = require('./routes/editActionPlan'); // 👈 Add this
 
 
 
@@ -22,6 +23,9 @@ app.use('/api/forms', formRoutes);
 
 //for action plan 
 app.use('/api/action-plan', actionPlanRoutes);
+
+//for edit action plan
+app.use('/api/edit-action-plan', editActionPlanRoutes); // 👈 Add this
 
 // 🛠 Mount admin-related routes
 app.use('/api/admin', adminRoutes);
