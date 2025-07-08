@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Action Plan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      margin: 2rem;
+    }
+
+    h2, h3 {
+      text-align: center;
+    }
+
+    .form-section, .search-section {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 1rem;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    .btn {
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    #editSection {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔍 Search to Edit Action Plan</h2>
+
+  <!-- 🔍 Search Section -->
+  <div class="search-section">
+    <label for="search_sub_municipal">Sub-Municipal</label>
+    <select id="search_sub_municipal">
+      <option value="">Select Sub-Municipal</option>
+      <option value="Kotobabi">Kotobabi</option>
+      <option value="Accra New Town">Accra New Town</option>
+      <option value="Alajo">Alajo</option>
+      <option value="Kokomlemle">Kokomlemle</option>
+    </select>
+
+    <label for="search_facility">Facility Visited</label>
+    <select id="search_facility">
+      <option value="">Select Facility</option>
+    </select>
+
+    <label for="search_quarter">Quarter</label>
+    <select id="search_quarter">
+      <option value="">Select Quarter</option>
+      <option value="First Quarter">First Quarter</option>
+      <option value="Second Quarter">Second Quarter</option>
+      <option value="Third Quarter">Third Quarter</option>
+      <option value="Fourth Quarter">Fourth Quarter</option>
+    </select>
+
+    <label for="search_date">Date</label>
+    <input type="date" id="search_date" />
+
+    <button class="btn" id="searchBtn">🔎 Search</button>
+  </div>
+
+  <!-- ✏️ Edit Section -->
+  <div id="editSection" class="form-section">
+    <h3>✏️ Edit Action Plan</h3>
+
+    <form id="editActionPlanForm">
+      <input type="hidden" id="action_plan_id" />
+
+      <label for="sub_municipal">Sub-Municipal</label>
+      <select id="sub_municipal" name="sub_municipal" required>
+        <option value="">Select Sub-Municipal</option>
+        <option value="Kotobabi">Kotobabi</option>
+        <option value="Accra New Town">Accra New Town</option>
+        <option value="Alajo">Alajo</option>
+        <option value="Kokomlemle">Kokomlemle</option>
+      </select>
+
+      <label for="facility">Facility</label>
+      <select id="facility" name="facility" required></select>
+
+      <label for="quarter">Quarter</label>
+      <select id="quarter" name="quarter" required>
+        <option value="">Select Quarter</option>
+        <option value="First Quarter">First Quarter</option>
+        <option value="Second Quarter">Second Quarter</option>
+        <option value="Third Quarter">Third Quarter</option>
+        <option value="Fourth Quarter">Fourth Quarter</option>
+      </select>
+
+      <label for="date">Date</label>
+      <input type="date" id="date" name="date" required />
+
+      <label for="supervisor">Supervisor Name</label>
+      <input type="text" id="supervisor" name="supervisor" required />
+
+      <label for="incharge">Facility In-Charge</label>
+      <input type="text" id="incharge" name="incharge" required />
+
+      <h4>📋 Action Items</h4>
+      <table id="actionTable">
+        <thead>
+          <tr>
+            <th>Clinical Area</th>
+            <th>Challenge</th>
+            <th>Action</th>
+            <th>Indicator</th>
+            <th>Time Frame</th>
+            <th>Responsible</th>
+            <th>Resources</th>
+            <th>Next Assessment</th>
+            <th>🗑</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows will be added here dynamically -->
+        </tbody>
+      </table>
+
+      <button type="button" class="btn" id="addRowBtn">➕ Add Row</button>
+      <button type="submit" class="btn">💾 Save Changes</button>
+    </form>
+  </div>
+
+  <script src="js/editActionPlan.js"></script>
+</body>
+</html>
