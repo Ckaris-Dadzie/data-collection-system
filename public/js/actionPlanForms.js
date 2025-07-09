@@ -50,12 +50,26 @@ const BASE_API_URL = window.location.hostname.includes("localhost")
 document.getElementById("actionPlanForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  const actions = [];
-  const rows = document.querySelectorAll("#actionsTable tbody tr");
+  const sub_municipal = document.getElementById("sub_municipal").value;
+  const facility_name = document.getElementById("facility_name").value;
+  const quarter = document.getElementById("quarter").value;
+  const monitoring_year = document.getElementById("monitoring_year").value;
 
+  const payload = {
+    sub_municipal,
+    facility_name,
+    quarter,
+    monitoring_year,
+    date: document.getElementById("date").value,
+    supervisor_name: document.getElementById("supervisor_name").value,
+    in_charge_name: document.getElementById("in_charge_name").value,
+    actions: []
+  };
+
+  const rows = document.querySelectorAll("#actionsTable tbody tr");
   rows.forEach(row => {
     const inputs = row.querySelectorAll("input, textarea");
-    actions.push({
+    payload.actions.push({
       clinical_area: inputs[0].value,
       challenges: inputs[1].value,
       proposed_changes: inputs[2].value,
@@ -67,43 +81,33 @@ document.getElementById("actionPlanForm").addEventListener("submit", async funct
     });
   });
 
-  const payload = {
-    sub_municipal: document.getElementById("sub_municipal").value,
-    facility_name: document.getElementById("facility_name").value,
-    quarter: document.getElementById("quarter").value,
-    monitoring_year: document.getElementById("monitoring_year").value,
-    date: document.getElementById("date").value,
-    supervisor_name: document.getElementById("supervisor_name").value,
-    in_charge_name: document.getElementById("in_charge_name").value,
-    actions
-  };
-
-  console.log("📤 Submitting payload:", payload);
-
   try {
+    // 🛑 Step 1: Check for duplicate before sending
+    const checkRes = await fetch(`${BASE_API_URL}/api/action-plan/check-duplicate?sub_municipal=${sub_municipal}&facility_name=${facility_name}&quarter=${quarter}&monitoring_year=${monitoring_year}`);
+    const checkData = await checkRes.json();
+
+    if (!checkData.success) {
+      alert("⚠️ An Action Plan for this Facility, Quarter, and Year already exists.");
+      return;
+    }
+
+    // ✅ Step 2: Submit only if not duplicate
     const res = await fetch(`${BASE_API_URL}/api/action-plan`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
 
-    // 🧠 Check for duplicate submission (HTTP 409)
-    if (res.status === 409) {
-      const data = await res.json();
-      alert(`⚠️ ${data.message}`);
-      return;
-    }
-
-    // 🔍 Check if other errors occurred
     const result = await res.json();
-    if (res.ok && result.success) {
+    if (result.success) {
       alert("✅ Action plan submitted!");
       location.reload();
     } else {
       alert("❌ Failed to submit action plan.");
     }
+
   } catch (err) {
-    console.error("❌ Error:", err);
+    console.error("❌ Error submitting form:", err);
     alert("❌ Network error.");
   }
 });

@@ -3,6 +3,46 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db'); // make sure your pool is set up for PostgreSQL or MySQL
 
+// ✅ GET /api/action-plan/check-duplicate
+router.get('/check-duplicate', async (req, res) => {
+  const { sub_municipal, facility_name, quarter, monitoring_year } = req.query;
+
+  if (!sub_municipal || !facility_name || !quarter || !monitoring_year) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing required query parameters"
+    });
+  }
+
+  try {
+    const result = await pool.query(`
+      SELECT id FROM action_plans
+      WHERE sub_municipal = $1 AND facility_name = $2 AND quarter = $3 AND monitoring_year = $4
+    `, [sub_municipal, facility_name, quarter, monitoring_year]);
+
+    if (result.rows.length > 0) {
+      return res.status(200).json({
+        success: false,
+        message: "Duplicate action plan exists"
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "No duplicate found"
+    });
+  } catch (err) {
+    console.error("❌ Duplicate check error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: err.message
+    });
+  }
+});
+
+
+
 // ✅ POST /api/action-plan
 router.post('/', async (req, res) => {
   console.log("🔔 /api/action-plan route hit");
