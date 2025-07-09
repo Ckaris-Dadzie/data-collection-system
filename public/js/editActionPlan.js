@@ -1,3 +1,6 @@
+
+
+document.addEventListener("DOMContentLoaded", () => {
 // 🌍 Base API URL (for local vs. production)
 const BASE_API_URL = window.location.hostname.includes("localhost")
   ? "http://localhost:5000"
@@ -213,4 +216,5 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+});
 
