@@ -64,7 +64,9 @@ async function fetchAndDisplayPlans(page = 1) {
     sub_municipal,
     facility_name,
     quarter,
-    monitoring_year
+    monitoring_year,
+    page,
+    limit: itemsPerPage
   });
 
   try {
@@ -73,7 +75,7 @@ async function fetchAndDisplayPlans(page = 1) {
 
     if (data.success) {
       renderTable(data.plans, page);
-      renderPagination(data.plans.length, page);
+      renderPagination(data.total, page);
     } else {
       alert("No action plans found.");
     }
@@ -82,6 +84,7 @@ async function fetchAndDisplayPlans(page = 1) {
     alert("Failed to fetch action plans.");
   }
 }
+
 
 // ==========================
 // 🖊 Render Table with Data
