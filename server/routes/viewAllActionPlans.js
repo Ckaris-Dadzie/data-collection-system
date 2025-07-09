@@ -1,74 +1,45 @@
-// 📁 routes/viewAllActionPlans.js
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
-// ✅ GET /api/action-plan/all?page=1&limit=10&sub_municipal=...&facility_name=...&quarter=...&monitoring_year=...
-router.get('/all', async (req, res) => {
-  const {
-    page = 1,
-    limit = 10,
-    sub_municipal,
-    facility_name,
-    quarter,
-    monitoring_year
-  } = req.query;
-
-  const offset = (page - 1) * limit;
+// ✅ GET /api/view-all-action-plans
+router.get('/', async (req, res) => {
+  const { sub_municipal, facility_name, quarter, monitoring_year } = req.query;
 
   try {
-    const values = [];
-    const filters = [];
+    const client = await pool.connect();
 
-    // 📌 Apply filters only if they are provided
+    let query = `SELECT * FROM action_plans WHERE 1=1`;
+    const params = [];
+    let i = 1;
+
     if (sub_municipal) {
-      values.push(sub_municipal);
-      filters.push(`sub_municipal = $${values.length}`);
+      query += ` AND sub_municipal = $${i++}`;
+      params.push(sub_municipal);
     }
-
     if (facility_name) {
-      values.push(facility_name);
-      filters.push(`facility_name = $${values.length}`);
+      query += ` AND facility_name = $${i++}`;
+      params.push(facility_name);
     }
-
     if (quarter) {
-      values.push(quarter);
-      filters.push(`quarter = $${values.length}`);
+      query += ` AND quarter = $${i++}`;
+      params.push(quarter);
     }
-
     if (monitoring_year) {
-      values.push(monitoring_year);
-      filters.push(`monitoring_year = $${values.length}`);
+      query += ` AND monitoring_year = $${i++}`;
+      params.push(monitoring_year);
     }
 
-    const whereClause = filters.length > 0 ? `WHERE ${filters.join(' AND ')}` : '';
+    query += ` ORDER BY date DESC`;
 
-    // 🔢 Count total rows
-    const countResult = await pool.query(
-      `SELECT COUNT(*) FROM action_plans ${whereClause}`,
-      values
-    );
-    const totalCount = parseInt(countResult.rows[0].count);
-    const totalPages = Math.ceil(totalCount / limit);
+    const result = await client.query(query, params);
+    client.release();
 
-    // 📦 Fetch paginated results
-    values.push(limit, offset); // Add for LIMIT and OFFSET
-    const dataResult = await pool.query(
-      `SELECT * FROM action_plans ${whereClause} ORDER BY date DESC LIMIT $${values.length - 1} OFFSET $${values.length}`,
-      values
-    );
-
-    res.json({
-      success: true,
-      data: dataResult.rows,
-      totalCount,
-      totalPages,
-      currentPage: parseInt(page)
-    });
+    res.json({ success: true, plans: result.rows });
 
   } catch (err) {
-    console.error("❌ Error fetching action plans:", err.stack || err);
-    res.status(500).json({ success: false, message: "Failed to fetch action plans", error: err.message });
+    console.error("❌ Error loading action plans:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
