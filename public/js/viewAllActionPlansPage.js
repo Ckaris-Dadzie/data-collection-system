@@ -8,25 +8,12 @@ const BASE_API_URL = window.location.hostname.includes("localhost")
 // 🌍 Facility Map
 // ========================
 const facilityMap = {
-  "Kotobabi": [
-    "Anthon Memorial Hospital", "Anthon Memorial Hospital Annex", "Effan Victory Clinic", "Life View Medical Hospital", 
-    "Anthon CHPS", "Bright Star CHPS", "Ebony Down CHPS", "Pigfarm CHPS", "Anthon Annex CHPS", "Great Gerraldo CHPS"
-  ],
-  "Accra New Town": [
-    "Ghanuba Specialist Hospital", "Medylife Healthcare (Clinix)", "Mercy Ana’s Maternity Home", "Mission Clinic", 
-    "Mustard Health Systems and", "Fertility Centre (Sape Agbo)", "Gift Medical Centre", "Apostolic CHPS", 
-    "Mrs. Dua CHPS", "Ayidiki CHPS", "Wisdom CHPS"
-  ],
-  "Alajo": [
-    "Alajo Community Clinic", "Unfolding Glory Medical Centre", "Alajo Park CHPS", "Delape CHPS", "High Tension CHPS", 
-    "Pele CHPS", "Polo Park CHPS"
-  ],
-  "Kokomlemle": [
-    "Entrance University Hospital", "Mallam Atta Government Clinic", "Mariestopes International Ghana", 
-    "Salvation Army Anidasofie Clinic", "Holy Heights Clinic ", "Anidasofie CHPS", "De-youngsters CHPS", 
-    "New Page CHPS", "Mallam Atta CHPS", "Tip Toe CHPS"
-  ]
+  "Kotobabi": ["Anthon", "Anness"],
+  "Accra New Town": ["Ghanuba Specialist Hospital", "Medylife Healthcare (Clinix)", "Savana Hospital"],
+  "Alajo": ["Richsound", "Konti"],
+  "Kokomlemle": ["Jamesons", "Vine Clinic"]
 };
+
 // =============================
 // 🛠 Populate Facility Dropdown
 // =============================
@@ -105,6 +92,7 @@ function renderTable(plans, page) {
       <td>
         <a href="editActionPlan.html?id=${plan.id}" class="edit-link">Edit</a> |
         <a href="viewActionPlan.html?id=${plan.id}" class="view-link">View</a> |
+        <button onclick="printPlan(${plan.id})" class="print-btn">Print</button> |
         <button onclick="deletePlan(${plan.id})" class="delete-btn">Delete</button>
       </td>
     `;
@@ -147,6 +135,13 @@ async function deletePlan(id) {
     console.error("❌ Error deleting:", err);
     alert("Delete failed");
   }
+}
+
+// ====================
+// 🖨 Print Action Plan
+// ====================
+function printPlan(id) {
+  window.open(`printActionPlan.html?id=${id}`, "_blank");
 }
 
 // Initial fetch on load
