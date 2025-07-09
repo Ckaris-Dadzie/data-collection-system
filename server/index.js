@@ -7,6 +7,7 @@ const formRoutes = require('./routes/forms');
 const adminRoutes = require('./routes/admin');
 const actionPlanRoutes = require('./routes/actionPlan');
 const editActionPlanRoutes = require('./routes/editActionPlan'); // 👈 Add this
+const viewAllActionPlansRoute = require('./routes/viewAllActionPlans');
 
 
 
@@ -26,6 +27,9 @@ app.use('/api/action-plan', actionPlanRoutes);
 
 //for edit action plan
 app.use('/api/edit-action-plan', editActionPlanRoutes); // 👈 Add this
+
+//for view all action plans
+app.use('/api/view-all-action-plans', viewAllActionPlansRoute);
 
 // 🛠 Mount admin-related routes
 app.use('/api/admin', adminRoutes);
