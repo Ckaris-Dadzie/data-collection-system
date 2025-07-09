@@ -8,12 +8,25 @@ const BASE_API_URL = window.location.hostname.includes("localhost")
 // 🌍 Facility Map
 // ========================
 const facilityMap = {
-  "Kotobabi": ["Anthon", "Anness"],
-  "Accra New Town": ["Ghanuba Specialist Hospital", "Medylife Healthcare (Clinix)", "Savana Hospital"],
-  "Alajo": ["Richsound", "Konti"],
-  "Kokomlemle": ["Jamesons", "Vine Clinic"]
+  "Kotobabi": [
+    "Anthon Memorial Hospital", "Anthon Memorial Hospital Annex", "Effan Victory Clinic", "Life View Medical Hospital", 
+    "Anthon CHPS", "Bright Star CHPS", "Ebony Down CHPS", "Pigfarm CHPS", "Anthon Annex CHPS", "Great Gerraldo CHPS"
+  ],
+  "Accra New Town": [
+    "Ghanuba Specialist Hospital", "Medylife Healthcare (Clinix)", "Mercy Ana’s Maternity Home", "Mission Clinic", 
+    "Mustard Health Systems and", "Fertility Centre (Sape Agbo)", "Gift Medical Centre", "Apostolic CHPS", 
+    "Mrs. Dua CHPS", "Ayidiki CHPS", "Wisdom CHPS"
+  ],
+  "Alajo": [
+    "Alajo Community Clinic", "Unfolding Glory Medical Centre", "Alajo Park CHPS", "Delape CHPS", "High Tension CHPS", 
+    "Pele CHPS", "Polo Park CHPS"
+  ],
+  "Kokomlemle": [
+    "Entrance University Hospital", "Mallam Atta Government Clinic", "Mariestopes International Ghana", 
+    "Salvation Army Anidasofie Clinic", "Holy Heights Clinic ", "Anidasofie CHPS", "De-youngsters CHPS", 
+    "New Page CHPS", "Mallam Atta CHPS", "Tip Toe CHPS"
+  ]
 };
-
 // =============================
 // 🛠 Populate Facility Dropdown
 // =============================
