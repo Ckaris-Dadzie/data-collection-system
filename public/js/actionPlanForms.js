@@ -78,7 +78,6 @@ document.getElementById("actionPlanForm").addEventListener("submit", async funct
     actions
   };
 
-
   console.log("📤 Submitting payload:", payload);
 
   try {
@@ -88,8 +87,16 @@ document.getElementById("actionPlanForm").addEventListener("submit", async funct
       body: JSON.stringify(payload)
     });
 
+    // 🧠 Check for duplicate submission (HTTP 409)
+    if (res.status === 409) {
+      const data = await res.json();
+      alert(`⚠️ ${data.message}`);
+      return;
+    }
+
+    // 🔍 Check if other errors occurred
     const result = await res.json();
-    if (result.success) {
+    if (res.ok && result.success) {
       alert("✅ Action plan submitted!");
       location.reload();
     } else {
@@ -100,6 +107,7 @@ document.getElementById("actionPlanForm").addEventListener("submit", async funct
     alert("❌ Network error.");
   }
 });
+
 
 // ==========================
 // ➕ Add a New Action Row
