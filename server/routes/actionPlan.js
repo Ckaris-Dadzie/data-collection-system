@@ -50,6 +50,22 @@ const {
   console.log("🔗 Database connection established");
 
   try {
+
+    // ❗ Prevent duplicate action plan for the same facility, quarter and year
+const duplicateCheck = await client.query(`
+  SELECT id FROM action_plans
+  WHERE sub_municipal = $1 AND facility_name = $2 AND quarter = $3 AND monitoring_year = $4
+`, [sub_municipal, facility_name, quarter, monitoring_year]);
+
+if (duplicateCheck.rows.length > 0) {
+  console.warn("⚠️ Duplicate action plan submission detected.");
+  return res.status(409).json({
+    success: false,
+    message: "An Action Plan for this Facility, Quarter and Year already exists."
+  });
+}
+
+// 🔽 Now begin transaction
     await client.query('BEGIN');
 
     // 1️⃣ Insert metadata into action_plans
