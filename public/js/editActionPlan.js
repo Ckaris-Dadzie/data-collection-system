@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const res = await fetch(`${BASE_API_URL}/api/action-plan/${id}`, {
+      const res = await fetch(`${BASE_API_URL}/api/edit-action-plan/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
