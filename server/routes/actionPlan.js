@@ -228,6 +228,27 @@ router.get('/view', async (req, res) => {
   }
 });
 
+// =============================
+// for modal viewing all action plans
+// =============================
+// ✅ GET /api/action-plan/:id → fetch one action plan by ID
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query('SELECT * FROM action_plans WHERE id = $1', [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Action plan not found" });
+    }
+
+    res.json({ success: true, plan: result.rows[0] });
+  } catch (err) {
+    console.error("❌ Error fetching action plan by ID:", err);
+    res.status(500).json({ success: false, message: "Server error", error: err.message });
+  }
+});
+
 
 
 module.exports = router;
