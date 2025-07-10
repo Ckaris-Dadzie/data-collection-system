@@ -49,12 +49,14 @@ document.getElementById("sub_municipal").addEventListener("change", function () 
 // =============================
 // 🔍 Fetch & Display Action Plans
 // =============================
-document.getElementById("searchBtn").addEventListener("click", fetchAndDisplayPlans);
+document.getElementById("searchBtn").addEventListener("click", () => fetchAndDisplayPlans(1));
 
 let currentPage = 1;
 const itemsPerPage = 5;
 
 async function fetchAndDisplayPlans(page = 1) {
+  currentPage = page;
+
   const sub_municipal = document.getElementById("sub_municipal").value;
   const facility_name = document.getElementById("facility_name").value;
   const quarter = document.getElementById("quarter").value;
@@ -65,8 +67,8 @@ async function fetchAndDisplayPlans(page = 1) {
     facility_name,
     quarter,
     monitoring_year,
-    page,
-    limit: itemsPerPage
+    page: page.toString(),
+    limit: itemsPerPage.toString()
   });
 
   try {
@@ -74,7 +76,7 @@ async function fetchAndDisplayPlans(page = 1) {
     const data = await res.json();
 
     if (data.success) {
-      renderTable(data.plans, page);
+      renderTable(data.plans);
       renderPagination(data.total, page);
     } else {
       alert("No action plans found.");
@@ -85,20 +87,17 @@ async function fetchAndDisplayPlans(page = 1) {
   }
 }
 
-
 // ==========================
 // 🖊 Render Table with Data
 // ==========================
-function renderTable(plans, page) {
+function renderTable(plans) {
   const tbody = document.querySelector("#actionPlansTable tbody");
   tbody.innerHTML = "";
-  const start = (page - 1) * itemsPerPage;
-  const paginatedPlans = plans.slice(start, start + itemsPerPage);
 
-  paginatedPlans.forEach((plan, index) => {
+  plans.forEach((plan, index) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${start + index + 1}</td>
+      <td>${(currentPage - 1) * itemsPerPage + index + 1}</td>
       <td>${plan.sub_municipal}</td>
       <td>${plan.facility_name}</td>
       <td>${plan.quarter}</td>
@@ -122,6 +121,8 @@ function renderTable(plans, page) {
 // =====================
 function renderPagination(totalItems, currentPage) {
   const paginationDiv = document.getElementById("pagination");
+  if (!paginationDiv) return;
+
   paginationDiv.innerHTML = "";
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
