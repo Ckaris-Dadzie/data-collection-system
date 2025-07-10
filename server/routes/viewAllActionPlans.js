@@ -1,4 +1,15 @@
 // 📁 routes/viewAllActionPlans.js
+const express = require('express');
+const router = express.Router();
+const pool = require('../db');
+
+// ✅ GET /api/view-all-action-plans
+router.get('/', async (req, res) => {
+  // your logic
+});
+
+
+// 📁 routes/viewAllActionPlans.js
 router.get('/', async (req, res) => {
   const { sub_municipal, facility_name, quarter, monitoring_year, page = 1, limit = 50 } = req.query;
   const offset = (parseInt(page) - 1) * parseInt(limit);
@@ -56,3 +67,5 @@ router.get('/', async (req, res) => {
     res.status(500).json({ success: false, message: "Server error", error: err.message });
   }
 });
+
+module.exports = router;
