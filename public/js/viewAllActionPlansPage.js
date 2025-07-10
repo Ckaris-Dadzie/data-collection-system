@@ -62,14 +62,12 @@ async function fetchAndDisplayPlans(page = 1) {
   const quarter = document.getElementById("quarter").value;
   const monitoring_year = document.getElementById("monitoring_year").value;
 
-  const queryParams = new URLSearchParams({
-    sub_municipal,
-    facility_name,
-    quarter,
-    monitoring_year,
-    page: page.toString(),
-    limit: itemsPerPage.toString()
-  });
+  const queryParams = new URLSearchParams({ page, limit: itemsPerPage });
+
+  if (sub_municipal) queryParams.append("sub_municipal", sub_municipal);
+  if (facility_name) queryParams.append("facility_name", facility_name);
+  if (quarter) queryParams.append("quarter", quarter);
+  if (monitoring_year) queryParams.append("monitoring_year", monitoring_year);
 
   try {
     const res = await fetch(`${BASE_API_URL}/api/view-all-action-plans?${queryParams}`);

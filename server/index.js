@@ -2,6 +2,10 @@
 // server/index.js
 const express = require('express');
 const cors = require('cors');
+const allowedOrigins = [
+  "http://localhost:5500", // your local dev origin
+  "https://data-collection-system-git-main-ckaris-dadzies-projects.vercel.app", // your Vercel frontend
+];
 const pool = require('./db'); // PostgreSQL connection
 const formRoutes = require('./routes/forms');
 const adminRoutes = require('./routes/admin');
@@ -15,7 +19,15 @@ const viewAllActionPlansRoute = require('./routes/viewAllActionPlans');
 const app = express();
 
 // 🔓 Enable CORS for all routes
-app.use(cors());
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('❌ Not allowed by CORS'));
+    }
+  }
+}));
 
 // 🧠 Parse incoming JSON payloads
 app.use(express.json());
