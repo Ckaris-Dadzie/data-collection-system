@@ -1,0 +1,54 @@
+/* Full-page center container */
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #e9ecef; /* optional light background */
+  font-family: Arial, sans-serif;
+}
+
+/* Main auth form container */
+.auth-container {
+  max-width: 400px;
+  width: 100%;
+  padding: 2rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+/* Form elements */
+form label {
+  display: block;
+  margin: 1rem 0;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #45a049;
+}
+
+#registerMessage {
+  margin-top: 1rem;
+  font-weight: bold;
+}

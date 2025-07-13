@@ -9,6 +9,7 @@ const actionPlanRoutes = require('./routes/actionPlan');
 const editActionPlanRoutes = require('./routes/editActionPlan'); // 👈 Add this
 const viewAllActionPlansRoute = require('./routes/viewAllActionPlans');
 const authRoutes = require('./routes/auth');
+const authRegister = require("./routes/authRegister");
 
 
 
@@ -35,6 +36,9 @@ app.use('/api/view-all-action-plans', viewAllActionPlansRoute);
 
 //for authentication
 app.use('/api', authRoutes);
+
+//for registration
+app.use("/api/auth/register", authRegister);
 
 // 🛠 Mount admin-related routes
 app.use('/api/admin', adminRoutes);

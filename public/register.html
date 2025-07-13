@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Registration</title>
+  <link rel="stylesheet" href="css/register.css" />
+</head>
+<body>
+
+  <div class="auth-container">
+    <h1>Register New User</h1>
+    <form id="registerForm">
+      <label>
+        Full Name:
+        <input type="text" id="full_name" required />
+      </label>
+
+      <label>
+        Email:
+        <input type="email" id="email" required />
+      </label>
+
+      <label>
+        Password:
+        <input type="password" id="password" required />
+      </label>
+
+      <label>
+        Role:
+        <select id="role" required>
+          <option value="">-- Select Role --</option>
+          <option value="admin">Admin</option>
+          <option value="supervisor">Supervisor</option>
+          <option value="user">User</option>
+        </select>
+      </label>
+
+      <button type="submit">Register</button>
+      <p id="registerMessage"></p>
+    </form>
+
+    <p><a href="login.html">Already have an account? Login here</a></p>
+  </div>
+
+  <script src="register.js"></script>
+</body>
+</html>
