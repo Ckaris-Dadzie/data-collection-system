@@ -229,5 +229,39 @@ router.get('/view', async (req, res) => {
 });
 
 
+// =============================
+// This code is for the viewAllActionPlans: view when you click on the view button inside viewAllActionPlansPage
+// =============================
+// ✅ GET /api/action-plan/:id → Fetch full action plan (metadata + items) by ID
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const client = await pool.connect();
+
+    // 1️⃣ Get action plan metadata
+    const planResult = await client.query(`SELECT * FROM action_plans WHERE id = $1`, [id]);
+    if (planResult.rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Action plan not found" });
+    }
+
+    const plan = planResult.rows[0];
+
+    // 2️⃣ Get all related action items
+    const actionItemsResult = await client.query(`SELECT * FROM action_items WHERE form_id = $1`, [id]);
+    plan.actions = actionItemsResult.rows;
+
+    client.release();
+
+    res.status(200).json({ success: true, plan });
+
+  } catch (err) {
+    console.error("❌ Error fetching plan by ID:", err);
+    res.status(500).json({ success: false, message: "Server error", error: err.message });
+  }
+});
+
+
+
 
 module.exports = router;
