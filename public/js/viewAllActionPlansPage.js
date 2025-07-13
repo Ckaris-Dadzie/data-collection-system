@@ -103,7 +103,7 @@ function renderTable(plans) {
       <td>${plan.supervisor_name}</td>
       <td>${plan.in_charge_name}</td>
       <td>
-        <a href="viewActionPlan.html?id=${plan.id}" class="view-link">View</a> |
+        <a href="viewActionPlans.html?id=${plan.id}" class="view-link">View</a> |
         <a href="editActionPlan.html?id=${plan.id}" class="edit-link">Edit</a> |
         <button onclick="printPlan(${plan.id})" class="print-btn">Print</button> |
         <button onclick="deletePlan(${plan.id})" class="delete-btn">Delete</button>
