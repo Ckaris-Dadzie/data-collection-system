@@ -389,6 +389,7 @@ window.onload = async function () {
       <button onclick="printSection()">🖨️ Print This Result</button>
       <button onclick="editActionPlan(${plan.id})">✏️ Edit</button>
       <button onclick="deleteActionPlan(${plan.id})">🗑️ Delete</button>
+      <a href="viewAllActionPlans.html" style="margin-left: 15px; font-weight: bold; text-decoration: underline;">⬅️ Back to All Action Plans</a>
     `;
 
     document.getElementById("results").innerHTML = html;
