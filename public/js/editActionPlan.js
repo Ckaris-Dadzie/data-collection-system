@@ -265,4 +265,40 @@ if (saveBtn) {
       alert("❌ Network error during update.");
     }
   });
+
+  // 🚀 Auto-load Action Plan if ?id= is present in URL (for edit page)
+const autoPlanId = new URLSearchParams(window.location.search).get("id");
+if (autoPlanId) {
+  (async () => {
+    try {
+      const res = await fetch(`${BASE_API_URL}/api/action-plan/${autoPlanId}`);
+      if (!res.ok) throw new Error("Plan not found");
+
+      const result = await res.json();
+      const plan = result.plan;
+
+      // ✅ Populate form fields
+      hiddenIdInput.value = plan.id;
+      subMunicipalSelect.value = plan.sub_municipal;
+      subMunicipalSelect.dispatchEvent(new Event("change"));
+      facilitySelect.value = plan.facility_name;
+      quarterSelect.value = plan.quarter;
+      yearInput.value = plan.monitoring_year;
+      dateInput.value = plan.date?.split("T")[0];
+      supervisorInput.value = plan.supervisor_name;
+      inchargeInput.value = plan.in_charge_name;
+
+      // ✅ Populate actions
+      actionTableBody.innerHTML = "";
+      plan.actions.forEach(row => createActionRow(row));
+
+      // ✅ Show the edit section
+      editSection.style.display = "block";
+    } catch (err) {
+      console.error("❌ Auto-load failed:", err);
+      alert("Failed to load Action Plan for editing.");
+    }
+  })();
+}
+
 }
