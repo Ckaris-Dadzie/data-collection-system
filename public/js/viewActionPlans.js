@@ -174,3 +174,108 @@ async function deleteActionPlan(planId) {
     alert("❌ Network error during delete.");
   }
 }
+
+
+// ====================
+//The code below is to view action plan when you click on the view button in viewAllActionPlansPage.js
+// ====================
+// ✅ Extract plan ID from URL (e.g., ?id=54)
+function getPlanIdFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("id");
+}
+
+// ✅ Auto-fetch and display action plan by ID if it exists in URL
+async function loadActionPlanById() {
+  const planId = getPlanIdFromURL();
+  if (!planId) return; // Skip if no ID in URL
+
+  try {
+    const res = await fetch(`${BASE_API_URL}/api/action-plan/${planId}`);
+    const data = await res.json();
+
+    if (!data.success) {
+      document.getElementById("results").innerHTML = "<p>❌ Action plan not found.</p>";
+      return;
+    }
+
+    const plan = data.plan;
+
+    // 🧠 Optional: Fetch its action items if not already embedded
+    const actionsRes = await fetch(`${BASE_API_URL}/api/action-items/${plan.id}`);
+    const actionsData = await actionsRes.json();
+    plan.actions = actionsData.success ? actionsData.actions : [];
+
+    // ✅ Reuse the rendering logic
+    let html = `
+      <h1>📋 AYAWASO CENTRAL MUNICIPAL HEALTH DIRECTORATE</h1>
+      <h2 style="text-align: center;font-size:30px; margin-top:-20px">
+      📌 ACTION PLAN FOR ISS "<strong>${plan.quarter}</strong>"  ${plan.monitoring_year}</h2>
+
+      <div style="display: flex; justify-content: center;gap:30px; text-align: center; font-size: 18px; margin-top:-30px"> 
+      <p><strong>Sub-Municipal:</strong> ${plan.sub_municipal}</p>
+      <p><strong>Facility Name:</strong> ${plan.facility_name}</p>
+      <p><strong>Date:</strong> ${plan.date}</p>
+      </div>
+
+      <div style="display: flex; justify-content: center;gap:30px; text-align: center; font-size: 18px; margin-top:-30px">
+      <p><strong>Supervisor:</strong> ${plan.supervisor_name}</p>
+      <p><strong>Sign:</strong>....................</p>
+      <p><strong>Facility In-Charge:</strong> ${plan.in_charge_name}</p>
+      <p><strong>Sign:</strong>....................</p>
+      </div>
+
+      <h3>🛠 Action Items</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Clinical Area</th>
+            <th>Challenges</th>
+            <th>Proposed Changes</th>
+            <th>Indicator</th>
+            <th>Time Frame</th>
+            <th>Responsible</th>
+            <th>Resources</th>
+            <th>Next Assessment</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    plan.actions.forEach((item, index) => {
+      html += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${item.clinical_area}</td>
+          <td>${item.challenges}</td>
+          <td>${item.proposed_changes}</td>
+          <td>${item.indicator}</td>
+          <td>${item.time_frame}</td>
+          <td>${item.person_responsible}</td>
+          <td>${item.resources}</td>
+          <td>${item.next_assessment}</td>
+        </tr>`;
+    });
+
+    html += `</tbody></table><br>`;
+
+    // Add Print/Edit/Delete
+    html += `
+      <button onclick="printSection()">🖨️ Print This Result</button>
+      <button onclick="editActionPlan(${plan.id})">✏️ Edit</button>
+      <button onclick="deleteActionPlan(${plan.id})">🗑️ Delete</button>
+    `;
+
+    document.getElementById("results").innerHTML = html;
+
+  } catch (err) {
+    console.error("❌ Error loading plan by ID:", err);
+    document.getElementById("results").innerHTML = "<p>⚠️ Failed to load action plan.</p>";
+  }
+}
+
+// ✅ Run this when the page loads
+window.onload = function () {
+  loadActionPlanById(); // Auto-load by ID from URL (if available)
+};
