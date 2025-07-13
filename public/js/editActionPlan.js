@@ -525,7 +525,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })();
   }
 
-  // 🔙 Handle Back Button
+ // 🔙 Handle Back Button
   const backBtn = document.getElementById("backBtn");
   if (backBtn) {
     backBtn.addEventListener("click", () => {
@@ -534,5 +534,6 @@ document.addEventListener("DOMContentLoaded", () => {
         : window.location.href = "viewAllActionPlans.html";
     });
   }
+
 
 }); // End of DOMContentLoaded
