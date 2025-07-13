@@ -63,7 +63,6 @@ async function fetchAndDisplayPlans(page = 1) {
   const monitoring_year = document.getElementById("monitoring_year").value;
 
   const queryParams = new URLSearchParams({ page, limit: itemsPerPage });
-
   if (sub_municipal) queryParams.append("sub_municipal", sub_municipal);
   if (facility_name) queryParams.append("facility_name", facility_name);
   if (quarter) queryParams.append("quarter", quarter);
@@ -104,7 +103,7 @@ function renderTable(plans) {
       <td>${plan.supervisor_name}</td>
       <td>${plan.in_charge_name}</td>
       <td>
-        <button onclick="openModal(${plan.id})" class="view-link">View</button> |
+        <a href="viewActionPlan.html?id=${plan.id}" class="view-link">View</a> |
         <a href="editActionPlan.html?id=${plan.id}" class="edit-link">Edit</a> |
         <button onclick="printPlan(${plan.id})" class="print-btn">Print</button> |
         <button onclick="deletePlan(${plan.id})" class="delete-btn">Delete</button>
@@ -159,36 +158,6 @@ async function deletePlan(id) {
 function printPlan(id) {
   window.open(`printActionPlan.html?id=${id}`, "_blank");
 }
-
-// =========================
-// 📋 Modal View for Preview
-// =========================
-function openModal(id) {
-  fetch(`${BASE_API_URL}/api/action-plan/${id}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        const plan = data.plan;
-        const modal = document.getElementById("previewModal");
-        document.getElementById("modalContent").innerHTML = `
-          <h3>${plan.sub_municipal} - ${plan.facility_name}</h3>
-          <p><strong>Quarter:</strong> ${plan.quarter}</p>
-          <p><strong>Year:</strong> ${plan.monitoring_year}</p>
-          <p><strong>Date:</strong> ${plan.date}</p>
-          <p><strong>Supervisor:</strong> ${plan.supervisor_name}</p>
-          <p><strong>In-Charge:</strong> ${plan.in_charge_name}</p>
-          <button onclick="window.open('viewActionPlan.html?id=${plan.id}', '_blank')">🔎 Full View</button>
-        `;
-        modal.style.display = "block";
-      } else {
-        alert("Failed to fetch plan details");
-      }
-    });
-}
-
-document.getElementById("modalClose").addEventListener("click", () => {
-  document.getElementById("previewModal").style.display = "none";
-});
 
 // Initial fetch on load
 window.onload = () => fetchAndDisplayPlans();
