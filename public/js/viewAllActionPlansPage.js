@@ -4,6 +4,7 @@ const BASE_API_URL = window.location.hostname.includes("localhost")
   ? "http://localhost:5000"
   : "https://data-collection-system.onrender.com";
 
+  
 // ========================
 // 🌍 Facility Map
 // ========================
@@ -52,7 +53,8 @@ document.getElementById("sub_municipal").addEventListener("change", function () 
 document.getElementById("searchBtn").addEventListener("click", () => fetchAndDisplayPlans(1));
 
 let currentPage = 1;
-const itemsPerPage = 5;
+const itemsPerPage = 20;
+let totalItems = 0;
 
 async function fetchAndDisplayPlans(page = 1) {
   currentPage = page;
@@ -116,20 +118,28 @@ function renderTable(plans) {
 // =====================
 // 📚 Pagination Controls
 // =====================
-function renderPagination(totalItems, currentPage) {
+function renderPagination(total, currentPage) {
   const paginationDiv = document.getElementById("pagination");
   if (!paginationDiv) return;
 
-  paginationDiv.innerHTML = "";
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  totalItems = total; // ✅ Update total items globally
+  const totalPages = Math.ceil(total / itemsPerPage);
 
-  for (let i = 1; i <= totalPages; i++) {
-    const btn = document.createElement("button");
-    btn.textContent = i;
-    btn.classList.toggle("active", i === currentPage);
-    btn.addEventListener("click", () => fetchAndDisplayPlans(i));
-    paginationDiv.appendChild(btn);
-  }
+  paginationDiv.innerHTML = `
+    <button id="prevPage" ${currentPage === 1 ? "disabled" : ""}>⏮️ Prev</button>
+    <span id="currentPage">Page ${currentPage}</span>
+    <button id="nextPage" ${currentPage === totalPages ? "disabled" : ""}>⏭️ Next</button>
+  `;
+
+  // ✅ Event listeners for Prev/Next
+  document.getElementById("prevPage").addEventListener("click", () => {
+    if (currentPage > 1) fetchAndDisplayPlans(currentPage - 1);
+  });
+
+  document.getElementById("nextPage").addEventListener("click", () => {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    if (currentPage < totalPages) fetchAndDisplayPlans(currentPage + 1);
+  });
 }
 
 // ====================
