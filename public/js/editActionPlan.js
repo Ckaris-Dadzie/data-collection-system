@@ -201,3 +201,68 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
+// =============================
+//This code handles the edit button inside the view all actions Page
+// =============================
+// 💾 Save/Update Action Plan
+document.getElementById("saveBtn").addEventListener("click", async () => {
+  const planId = new URLSearchParams(window.location.search).get("id");
+  if (!planId) return alert("❌ No Action Plan ID found in URL.");
+
+  const payload = {
+    sub_municipal: document.getElementById("sub_municipal").value,
+    facility_name: document.getElementById("facility_name").value,
+    quarter: document.getElementById("quarter").value,
+    monitoring_year: document.getElementById("monitoring_year").value,
+    date: document.getElementById("date").value,
+    supervisor_name: document.getElementById("supervisor_name").value,
+    in_charge_name: document.getElementById("in_charge_name").value,
+    actions: []
+  };
+
+  // 📥 Collect all editable rows
+  const rows = document.querySelectorAll("#action_items_table tbody tr");
+  for (let row of rows) {
+    const inputs = row.querySelectorAll("input");
+    if (inputs.length === 8) {
+      const [clinical_area, challenges, proposed_changes, indicator,
+        time_frame, person_responsible, resources, next_assessment] = [...inputs].map(input => input.value.trim());
+
+      // Only include rows with meaningful data
+      if (clinical_area || challenges || proposed_changes) {
+        payload.actions.push({
+          clinical_area,
+          challenges,
+          proposed_changes,
+          indicator,
+          time_frame,
+          person_responsible,
+          resources,
+          next_assessment
+        });
+      }
+    }
+  }
+
+  // 📤 Submit updated data
+  try {
+    const res = await fetch(`${BASE_API_URL}/api/action-plan/${planId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await res.json();
+    if (result.success) {
+      alert("✅ Action Plan updated successfully!");
+      window.location.href = "viewAllActionPlans.html";
+    } else {
+      alert("❌ Failed to update Action Plan.");
+    }
+  } catch (err) {
+    console.error("❌ Update error:", err);
+    alert("❌ Network error during update.");
+  }
+});
