@@ -1,22 +1,23 @@
 // 1. Facility mapping
 const facilities = {
-  "Kotobabi": ["Anthon Memorial Hospital", "Anthon Memorial Hospital Annex", "Effan Victory Clinic", "Life View Medical Hospital", 
-              "Anthon CHPS", "Bright Star CHPS", "Ebony Down CHPS", "Pigfarm CHPS", "Anthon Annex CHPS", "Great Gerraldo CHPS"
-              ],
-
-  "Accra New Town": ["Ghanuba Specialist Hospital", "Medylife Healthcare (Clinix)", "Mercy Ana’s Maternity Home", "Mission Clinic", 
-                    "Mustard Health Systems and", "Fertility Centre (Sape Agbo)", "Gift Medical Centre", "Apostolic CHPS", 
-                    "Mrs. Dua CHPS", "Ayidiki CHPS", "Wisdom CHPS"
-                    ],
-
-  "Alajo": ["Alajo Community Clinic", "Unfolding Glory Medical Centre", "Alajo Park CHPS", "Delape CHPS", "High Tension CHPS", 
-            "Pele CHPS", "Polo Park CHPS"
-          ],
-
-  "Kokomlemle": ["Entrance University Hospital", "Mallam Atta Government Clinic", "Mariestopes International Ghana", 
-                "Salvation Army Anidasofie Clinic", "Holy Heights Clinic ", "Anidasofie CHPS", "De-youngsters CHPS", 
-                "New Page CHPS", "Mallam Atta CHPS", "Tip Toe CHPS"
-                ]
+  "Kotobabi": [
+    "Anthon Memorial Hospital", "Anthon Memorial Hospital Annex", "Effan Victory Clinic", "Life View Medical Hospital", 
+    "Anthon CHPS", "Bright Star CHPS", "Ebony Down CHPS", "Pigfarm CHPS", "Anthon Annex CHPS", "Great Gerraldo CHPS"
+  ],
+  "Accra New Town": [
+    "Ghanuba Specialist Hospital", "Medylife Healthcare (Clinix)", "Mercy Ana’s Maternity Home", "Mission Clinic", 
+    "Mustard Health Systems and", "Fertility Centre (Sape Agbo)", "Gift Medical Centre", "Apostolic CHPS", 
+    "Mrs. Dua CHPS", "Ayidiki CHPS", "Wisdom CHPS"
+  ],
+  "Alajo": [
+    "Alajo Community Clinic", "Unfolding Glory Medical Centre", "Alajo Park CHPS", "Delape CHPS", "High Tension CHPS", 
+    "Pele CHPS", "Polo Park CHPS"
+  ],
+  "Kokomlemle": [
+    "Entrance University Hospital", "Mallam Atta Government Clinic", "Mariestopes International Ghana", 
+    "Salvation Army Anidasofie Clinic", "Holy Heights Clinic ", "Anidasofie CHPS", "De-youngsters CHPS", 
+    "New Page CHPS", "Mallam Atta CHPS", "Tip Toe CHPS"
+  ]
 };
 
 // 🔁 Smart backend base URL
@@ -65,7 +66,7 @@ const questionContainer = document.getElementById("questionsTableBody");
 subMunicipal.addEventListener("change", () => {
   const selected = subMunicipal.value;
   locationField.value = selected;
-  facilityVisited.innerHTML = "";
+  facilityVisited.innerHTML = "<option value=''>-- Select Facility --</option>";
 
   if (facilities[selected]) {
     facilities[selected].forEach(fac => {
