@@ -278,3 +278,27 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+//=============================
+//Duplicate check for Forms 
+//=============================
+
+// ✅ Duplicate Check – GET /api/forms/check-duplicate
+router.get('/check-duplicate', async (req, res) => {
+  const { monitoring_number, form_type, program, sub_municipal, facility_visited } = req.query;
+
+  try {
+    const result = await pool.query(
+      `SELECT id FROM forms WHERE monitoring_number = $1 AND form_type = $2 AND program = $3 AND sub_municipal = $4 AND facility_visited = $5`,
+      [monitoring_number, form_type, program, sub_municipal, facility_visited]
+    );
+
+    if (result.rows.length > 0) {
+      return res.status(200).json({ exists: true });
+    } else {
+      return res.status(200).json({ exists: false });
+    }
+  } catch (err) {
+    console.error("❌ Error checking duplicate form:", err.message);
+    res.status(500).json({ exists: false, error: "Server error while checking for duplicates" });
+  }
+});

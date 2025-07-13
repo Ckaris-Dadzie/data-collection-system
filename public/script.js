@@ -230,6 +230,32 @@ document.getElementById("dataForm").addEventListener("submit", async function (e
   //   return;
   // }
 
+  //==============================================
+  //Duplicate check for form submission
+  //==============================================
+    // 🚫 Check for duplicate submission
+  try {
+    const duplicateRes = await fetch(`${BASE_API_URL}/api/forms/check-duplicate?` + new URLSearchParams({
+      monitoring_number: data.monitoring_number,
+      form_type: data.form_type,
+      program: data.program,
+      sub_municipal: data.sub_municipal,
+      facility_visited: data.facility_visited
+    }));
+
+    const duplicateCheck = await duplicateRes.json();
+
+    if (duplicateCheck.exists) {
+      alert("❌ A form has already been submitted for this Monitoring Number, Program, and Facility.");
+      return; // Prevent submission
+    }
+  } catch (err) {
+    console.error("❌ Error checking for duplicates:", err);
+    alert("❌ Failed to validate duplicate submission.");
+    return;
+  }
+
+
   // 🔄 Prepare payload
   const payload = {
     ...data,
