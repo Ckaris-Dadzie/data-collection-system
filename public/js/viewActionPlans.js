@@ -25,6 +25,26 @@ const facilityMap = {
   ]
 };
 
+// 🔄 Auto-update facility dropdown based on selected Sub-Municipal
+document.getElementById("sub_municipal").addEventListener("change", function () {
+  const selected = this.value;
+  const facilityDropdown = document.getElementById("facility_name");
+
+  // Reset facility dropdown
+  facilityDropdown.innerHTML = '<option value="">-- Select Facility --</option>';
+
+  // Populate facilities for selected sub-municipal
+  if (facilityMap[selected]) {
+    facilityMap[selected].forEach(facility => {
+      const option = document.createElement("option");
+      option.value = facility;
+      option.textContent = facility;
+      facilityDropdown.appendChild(option);
+    });
+  }
+});
+
+
 // 🎯 Auto-run on load to get ID from URL and fetch details
 window.onload = async function () {
   const urlParams = new URLSearchParams(window.location.search);
