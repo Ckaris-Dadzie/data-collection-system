@@ -8,7 +8,7 @@
   <!--Custom Link css for admin page sytle -->
   <link rel="stylesheet" href="admin.css" />
   <link rel="stylesheet" href="nav.css" />
-
+  <link rel="stylesheet" href="css/logout.css" />
 
 </head>
 <body>
@@ -16,6 +16,7 @@
 <!-- 🔗 Responsive Navigation Bar -->
 <nav class="navbar">
   <div class="nav-container">
+    
     <div class="nav-logo">📋 ACMHD IMSS</div>
 
     <!-- Hamburger icon (visible only on small screens) -->
@@ -34,6 +35,14 @@
       <li><a href="#">🧪 Assessments</a></li>
     </ul>
   </div>
+ 
+   <!-- 🔓 Logout Button -->
+    <div class="logout-container">
+    <span id="userNameDisplay"></span>
+    <button id="logoutBtn">Logout</button>
+    </div>
+ 
+
 </nav>
 
 
@@ -142,6 +151,7 @@
   <script src="admin.js"></script>
   <script src="nav.js"></script>
   <script src="js/authGuard.js"></script>
+  <script src="js/logout.js"></script>
 
 </body>
 </html>

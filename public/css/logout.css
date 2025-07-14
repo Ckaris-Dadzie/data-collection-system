@@ -1,0 +1,47 @@
+/* 📦 Place in your CSS file (e.g., nav.css or main.css) */
+
+/* Container */
+.logout-container { 
+  position: fixed;
+  top: 30px; /* Adjust as needed */
+  right: 20px; /* Adjust as needed */
+  right: 0;
+  width: 100%;
+  z-index: 1000; /* Ensure it stays on top */
+}
+
+.logout-container {
+  text-align: right;
+  padding: 10px 40px;
+  background-color: #f9f9f900; /* subtle background */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Username display */
+#userNameDisplay {
+  font-weight: bold;
+  color: #333;
+  margin-right: 15px;
+}
+
+/* Logout button */
+#logoutBtn {
+  background-color: #e74c3c; /* red tone */
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#logoutBtn:hover {
+  background-color: #c0392b;
+}
+
+#userNameDisplay{
+    font-weight: 400;
+    color: #ffffff;
+    margin-right: 15px;
+}
