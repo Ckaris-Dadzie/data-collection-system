@@ -174,3 +174,98 @@ async function deleteActionPlan(planId) {
     alert("❌ Network error during delete.");
   }
 }
+
+// 🔍 Search action plans based on filters
+async function searchActionPlans() {
+  const subMunicipal = document.getElementById("sub_municipal").value;
+  const facilityName = document.getElementById("facility_name").value;
+  const quarter = document.getElementById("quarter").value;
+  const monitoringYear = document.getElementById("monitoring_year").value;
+
+  // Validate required filters
+  if (!subMunicipal || !facilityName || !quarter || !monitoringYear) {
+    alert("❗ Please fill all search filters.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${BASE_API_URL}/api/action-plan/search?sub_municipal=${encodeURIComponent(subMunicipal)}&facility_name=${encodeURIComponent(facilityName)}&quarter=${encodeURIComponent(quarter)}&monitoring_year=${encodeURIComponent(monitoringYear)}`);
+    const data = await response.json();
+
+    if (!data.success || !data.plans || data.plans.length === 0) {
+      document.getElementById("results").innerHTML = "<p>❌ No matching action plan found.</p>";
+      return;
+    }
+
+    // If multiple plans returned, show the most recent (or first)
+    const plan = data.plans[0];
+
+    let html = `
+      <h1>📋 AYAWASO CENTRAL MUNICIPAL HEALTH DIRECTORATE</h1>
+      <h2 style="text-align: center;font-size:30px; margin-top:-20px">
+      📌 ACTION PLAN FOR ISS "<strong>${plan.quarter}</strong>"  ${plan.monitoring_year}</h2>
+
+      <div style="display: flex; justify-content: center;gap:30px; text-align: center; font-size: 18px; margin-top:-30px"> 
+      <p><strong>Sub-Municipal:</strong> ${plan.sub_municipal}</p>
+      <p><strong>Facility Name:</strong> ${plan.facility_name}</p>
+      <p><strong>Date:</strong> ${plan.date}</p>
+      </div>
+
+      <div style="display: flex; justify-content: center;gap:30px; text-align: center; font-size: 18px; margin-top:-30px">
+      <p><strong>Supervisor:</strong> ${plan.supervisor_name}</p>
+      <p><strong>Sign:</strong>....................</p>
+      <p><strong>Facility In-Charge:</strong> ${plan.in_charge_name}</p>
+      <p><strong>Sign:</strong>....................</p>
+      </div>
+
+      <h3>🛠 Action Items</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Clinical Area</th>
+            <th>Challenges</th>
+            <th>Proposed Changes</th>
+            <th>Indicator</th>
+            <th>Time Frame</th>
+            <th>Responsible</th>
+            <th>Resources</th>
+            <th>Next Assessment</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    (plan.actions || []).forEach((item, index) => {
+      html += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${item.clinical_area}</td>
+          <td>${item.challenges}</td>
+          <td>${item.proposed_changes}</td>
+          <td>${item.indicator}</td>
+          <td>${item.time_frame}</td>
+          <td>${item.person_responsible}</td>
+          <td>${item.resources}</td>
+          <td>${item.next_assessment}</td>
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+
+    html += `
+      <br>
+      <button onclick="printSection()">🖨️ Print This Result</button>
+      <button onclick="editActionPlan(${plan.id})">✏️ Edit</button>
+      <button onclick="deleteActionPlan(${plan.id})">🗑️ Delete</button>
+      <a href="viewAllActionPlans.html" style="margin-left: 15px; font-weight: bold; text-decoration: underline;">⬅️ Back to All Action Plans</a>
+    `;
+
+    document.getElementById("results").innerHTML = html;
+
+  } catch (err) {
+    console.error("❌ Search error:", err);
+    alert("❌ Error fetching action plan.");
+  }
+}
