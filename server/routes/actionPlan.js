@@ -265,7 +265,6 @@
 
 
 
-
 // 📁 routes/actionPlan.js
 const express = require('express');
 const router = express.Router();
@@ -472,7 +471,6 @@ router.get('/view', async (req, res) => {
   }
 });
 
-// ✅ GET /api/action-plan/:id → MUST BE LAST!
 // ✅ GET /api/action-plan/search → search by filters
 router.get('/search', async (req, res) => {
   const { sub_municipal, facility_name, quarter, monitoring_year } = req.query;
@@ -506,6 +504,33 @@ router.get('/search', async (req, res) => {
   } catch (err) {
     console.error("❌ Search error:", err.stack || err);
     res.status(500).json({ success: false, message: "Failed to search action plans", error: err.message });
+  }
+});
+
+// ✅ GET /api/action-plan/:id → fetch full plan by ID (MUST BE LAST!)
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const client = await pool.connect();
+
+    const planResult = await client.query(`SELECT * FROM action_plans WHERE id = $1`, [id]);
+    if (planResult.rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Action plan not found" });
+    }
+
+    const plan = planResult.rows[0];
+
+    const actionItemsResult = await client.query(`SELECT * FROM action_items WHERE form_id = $1`, [id]);
+    plan.actions = actionItemsResult.rows;
+
+    client.release();
+
+    res.status(200).json({ success: true, plan });
+
+  } catch (err) {
+    console.error("❌ Error fetching plan by ID:", err);
+    res.status(500).json({ success: false, message: "Server error", error: err.message });
   }
 });
 
