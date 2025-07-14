@@ -35,7 +35,7 @@ app.use('/api/edit-action-plan', editActionPlanRoutes); // 👈 Add this
 app.use('/api/view-all-action-plans', viewAllActionPlansRoute);
 
 //for authentication
-app.use('/api', authRoutes);
+app.use('/api/auth', authRoutes); 
 
 //for registration
 app.use("/api/auth/register", authRegister);
