@@ -473,31 +473,39 @@ router.get('/view', async (req, res) => {
 });
 
 // ✅ GET /api/action-plan/:id → MUST BE LAST!
-router.get('/:id', async (req, res) => {
-  const id = parseInt(req.params.id); // Ensure it's a valid number
-  if (isNaN(id)) {
-    return res.status(400).json({ success: false, message: "Invalid ID format" });
-  }
+// ✅ GET /api/action-plan/search → search by filters
+router.get('/search', async (req, res) => {
+  const { sub_municipal, facility_name, quarter, monitoring_year } = req.query;
 
   try {
     const client = await pool.connect();
 
-    const planResult = await client.query(`SELECT * FROM action_plans WHERE id = $1`, [id]);
+    const planResult = await client.query(`
+      SELECT * FROM action_plans
+      WHERE sub_municipal = $1 AND facility_name = $2 AND quarter = $3 AND monitoring_year = $4
+    `, [sub_municipal, facility_name, quarter, monitoring_year]);
+
     if (planResult.rows.length === 0) {
-      return res.status(404).json({ success: false, message: "Action plan not found" });
+      return res.status(404).json({ success: false, message: "No matching action plans found" });
     }
 
-    const plan = planResult.rows[0];
+    const plans = [];
 
-    const actionItemsResult = await client.query(`SELECT * FROM action_items WHERE form_id = $1`, [id]);
-    plan.actions = actionItemsResult.rows;
+    for (const plan of planResult.rows) {
+      const actionItemsResult = await client.query(`
+        SELECT * FROM action_items WHERE form_id = $1
+      `, [plan.id]);
+
+      plan.actions = actionItemsResult.rows;
+      plans.push(plan);
+    }
 
     client.release();
+    res.status(200).json({ success: true, plans });
 
-    res.status(200).json({ success: true, plan });
   } catch (err) {
-    console.error("❌ Error fetching plan by ID:", err);
-    res.status(500).json({ success: false, message: "Server error", error: err.message });
+    console.error("❌ Search error:", err.stack || err);
+    res.status(500).json({ success: false, message: "Failed to search action plans", error: err.message });
   }
 });
 
