@@ -5,29 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Dashboard</title>
 
-  <!--Custom Link css for admin page sytle -->
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="admin.css" />
   <link rel="stylesheet" href="nav.css" />
   <link rel="stylesheet" href="css/logout.css" />
-
 </head>
 <body>
 
 <!-- 🔗 Responsive Navigation Bar -->
 <nav class="navbar">
   <div class="nav-container">
-    
     <div class="nav-logo">📋 ACMHD IMSS</div>
-
-    <!-- Hamburger icon (visible only on small screens) -->
     <button class="menu-toggle" id="menuToggle">☰</button>
 
-    <!-- Navigation Links -->
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">📝 Submit Form</a></li>
       <li><a href="view.html">🔍 View Forms</a></li>
       <li><a href="edit.html">✏️ Edit Form</a></li>
-      <li><a href="admin.html">🛠️ Admin</a></li>
+      <li><a href="admin.html" class="active">🛠️ Admin</a></li>
       <li><a href="actionPlan.html">📋 Action Plan</a></li>
       <li><a href="viewActionPlans.html">📋 View Action Plans</a></li>
       <li><a href="editActionPlan.html">✏️ Edit Action Plan</a></li>
@@ -35,109 +30,108 @@
       <li><a href="#">🧪 Assessments</a></li>
     </ul>
   </div>
- 
-   <!-- 🔓 Logout Button -->
-    <div class="logout-container">
+
+  <!-- 🔓 Logout Button -->
+  <div class="logout-container">
     <span id="userNameDisplay"></span>
     <button id="logoutBtn">Logout</button>
-    </div>
- 
-
+  </div>
 </nav>
 
+<div class="admin-dashboard">
+  <h1>📊 Admin Dashboard</h1>
 
+  <!-- 🔍 Search Filters -->
+  <div class="filter-section" id="searchSection">
+    <label>Form Type (Quarter):
+      <select id="filterFormType">
+        <option value="">-- All --</option>
+        <option>First Quarter</option>
+        <option>Second Quarter</option>
+        <option>Third Quarter</option>
+        <option>Fourth Quarter</option>
+      </select>
+    </label>
 
-  <div class="admin-dashboard">
-    <h1>📊 Admin Dashboard</h1>
+    <label>Monitoring Number (Year):
+      <input type="text" id="filterYear" placeholder="e.g. 2025"/>
+    </label>
 
-    <!-- Search Filters! -->
-    <div class="filter-section" id="searchSection">
-      <label>Form Type (Quarter):
-        <select id="filterFormType">
-          <option value="">-- All --</option>
-          <option>First Quarter</option>
-          <option>Second Quarter</option>
-          <option>Third Quarter</option>
-          <option>Fourth Quarter</option>
-        </select>
-      </label>
+    <label>Program:
+      <select id="filterProgram">
+        <option value="">-- All --</option>
+        <option>Clinical Care</option>
+        <option>Nutrition Services</option>
+        <option>Expanded Program of Immunisation, Surveillance and Tuberculosis</option>
+        <option>Health Promotion</option>
+        <option>Financial Management</option>
+        <option>Reproductive and Child Health</option>
+        <option>Management of Stores and Supplies</option>
+        <option>Quality Assurance</option>
+        <option>Standards, Protocols and Guidelines</option>
+        <option>Management Practice</option>
+        <option>Malaria Elimination</option>
+        <option>HIV/AIDS Control</option>
+        <option>Health Information Management</option>
+        <option>Mental Health</option>
+        <option>CHPS/MCHNP</option>
+      </select>
+    </label>
 
-      <label>Monitoring Number (Year):
-        <input type="text" id="filterYear" placeholder="e.g. 2025"/>
-      </label>
+    <label>Sub-Municipal:
+      <select id="filterSubMunicipal">
+        <option value="">-- All --</option>
+        <option value="Kotobabi">Kotobabi</option>
+        <option value="Accra New Town">Accra New Town</option>
+        <option value="Alajo">Alajo</option>
+        <option value="Kokomlemle">Kokomlemle</option>
+      </select>
+    </label>
 
-      <label>Program:
-        <select id="filterProgram">
-          <option value="">-- All --</option>
-          <option>Clinical Care</option>
-          <option>Nutrition Services</option>
-          <option>Expanded Program of Immunisation, Surveillance and Tuberculosis</option>
-          <option>Health Promotion</option>
-          <option>Financial Management</option>
-          <option>Reproductive and Child Health</option>
-          <option>Management of Stores and Supplies</option>
-          <option>Quality Assurance</option>
-          <option>Standards, Protocols and Guidelines</option>
-          <option>Management Practice</option>
-          <option>Malaria Elimination</option>
-          <option>HIV/AIDS Control</option>
-          <option>Health Information Management</option>
-          <option>Mental Health</option>
-          <option>CHPS/MCHNP</option>
-        </select>
-      </label>
+    <label>Facility Visited:
+      <select id="filterFacility">
+        <option value="">-- All --</option>
+      </select>
+    </label>
 
-      <label>Sub-Municipal:
-        <select id="filterSubMunicipal">
-          <option value="">-- All --</option>
-          <option value="Kotobabi">Kotobabi</option>
-          <option value="Accra New Town">Accra New Town</option>
-          <option value="Alajo">Alajo</option>
-          <option value="Kokomlemle">Kokomlemle</option>
-        </select>
-      </label>
-
-      <label>Facility Visited:
-        <select id="filterFacility">
-          <option value="">-- All --</option>
-        </select>
-      </label>
-
-      <button id="searchBtn">🔍 Search</button>
-    </div>
-
-    <!-- Results Table -->
-    <div 
-    style="overflow-x:auto;"
-    class="table-container" >
-      <table
-      class="admin-table" >
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Monitoring #</th>
-            <th>Form Type</th>
-            <th>Program</th>
-            <th>Name of Orgnaisation</th>
-            <th>Sub Municipal</th>
-            <th>Facility</th>
-            <th>Respondent</th>
-            <th>Monitoring Team</th>
-            <th>Team Members</th>
-           
-           
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="resultsBody">
-          <!-- Entries go here -->
-        </tbody>
-      </table>
-    </div>
+    <button id="searchBtn">🔍 Search</button>
   </div>
 
-  <!-- View Modal -->
+  <!-- 📋 Results Table -->
+  <div class="table-container" style="overflow-x:auto;">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>ID</th>
+          <th>Monitoring #</th>
+          <th>Form Type</th>
+          <th>Program</th>
+          <th>Organisation</th>
+          <th>Sub Municipal</th>
+          <th>Facility</th>
+          <th>Respondent</th>
+          <th>Monitoring Team</th>
+          <th>Team Members</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="resultsBody">
+        <!-- Entries go here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 🔄 Pagination -->
+<div class="pagination-container">
+  <button id="prevPage">⬅️ Prev</button>
+  <span id="paginationInfo">Page 1 of X</span>
+  <button id="nextPage">Next ➡️</button>
+</div>
+
+<!-- 👁 View Modal -->
 <div id="viewModal" class="modal" style="display: none;">
   <div class="modal-content">
     <span class="close-button" onclick="closeModal()">&times;</span>
@@ -147,11 +141,11 @@
   </div>
 </div>
 
-  <!--Custom js links-->
-  <script src="admin.js"></script>
-  <script src="nav.js"></script>
-  <script src="js/authGuard.js"></script>
-  <script src="js/logout.js"></script>
+<!-- JS -->
+<script src="admin.js"></script>
+<script src="nav.js"></script>
+<script src="js/authGuard.js"></script>
+<script src="js/logout.js"></script>
 
 </body>
 </html>

@@ -2,7 +2,7 @@
 
 /* Container */
 .logout-container { 
-  position: fixed;
+  position: scroll;
   top: 30px; /* Adjust as needed */
   right: 20px; /* Adjust as needed */
   right: 0;

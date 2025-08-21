@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
-// Get all forms (with optional filters)
+
+// Get all forms (with optional filters + pagination)
 router.get('/', async (req, res) => {
-  const { form_type, year, program, sub_municipal, facility_visited } = req.query;
+  const { form_type, year, program, sub_municipal, facility_visited, page = 1, limit = 30 } = req.query;
   let query = `SELECT * FROM forms`;
+  let countQuery = `SELECT COUNT(*) FROM forms`;
   let values = [];
   const conditions = [];
 
@@ -25,8 +27,8 @@ router.get('/', async (req, res) => {
   }
 
   if (sub_municipal) {
-  conditions.push(`sub_municipal = $${conditions.length + 1}`);
-  values.push(sub_municipal);
+    conditions.push(`sub_municipal = $${conditions.length + 1}`);
+    values.push(sub_municipal);
   }
 
   if (facility_visited) {
@@ -35,32 +37,97 @@ router.get('/', async (req, res) => {
   }
 
   if (conditions.length) {
-    query += ` WHERE ` + conditions.join(' AND ');
+    const whereClause = ` WHERE ` + conditions.join(' AND ');
+    query += whereClause;
+    countQuery += whereClause;
   }
 
   query += ` ORDER BY created_at DESC`;
 
+  // Pagination setup
+  const offset = (parseInt(page) - 1) * parseInt(limit);
+  query += ` LIMIT ${limit} OFFSET ${offset}`;
+
   try {
     const result = await pool.query(query, values);
-    res.json({ success: true, forms: result.rows });
+    const countResult = await pool.query(countQuery, values);
+    const total = parseInt(countResult.rows[0].count);
+
+    res.json({
+      success: true,
+      forms: result.rows,
+      pagination: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (err) {
     console.error("❌ Admin fetch error:", err.message);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
-// Delete a form
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    await pool.query(`DELETE FROM answers WHERE form_id = $1`, [id]);
-    await pool.query(`DELETE FROM forms WHERE id = $1`, [id]);
-    res.json({ success: true, message: "Form deleted." });
-  } catch (err) {
-    console.error("❌ Delete error:", err.message);
-    res.status(500).json({ success: false });
-  }
-});
+// // Get all forms (with optional filters)
+// router.get('/', async (req, res) => {
+//   const { form_type, year, program, sub_municipal, facility_visited } = req.query;
+//   let query = `SELECT * FROM forms`;
+//   let values = [];
+//   const conditions = [];
+
+//   if (form_type) {
+//     conditions.push(`form_type = $${conditions.length + 1}`);
+//     values.push(form_type);
+//   }
+
+//   if (year) {
+//     conditions.push(`monitoring_number LIKE $${conditions.length + 1}`);
+//     values.push(`%${year}`);
+//   }
+
+//   if (program) {
+//     conditions.push(`program = $${conditions.length + 1}`);
+//     values.push(program);
+//   }
+
+//   if (sub_municipal) {
+//   conditions.push(`sub_municipal = $${conditions.length + 1}`);
+//   values.push(sub_municipal);
+//   }
+
+//   if (facility_visited) {
+//     conditions.push(`facility_visited = $${conditions.length + 1}`);
+//     values.push(facility_visited);
+//   }
+
+//   if (conditions.length) {
+//     query += ` WHERE ` + conditions.join(' AND ');
+//   }
+
+//   query += ` ORDER BY created_at DESC`;
+
+//   try {
+//     const result = await pool.query(query, values);
+//     res.json({ success: true, forms: result.rows });
+//   } catch (err) {
+//     console.error("❌ Admin fetch error:", err.message);
+//     res.status(500).json({ success: false, message: "Server error" });
+//   }
+// });
+
+// // Delete a form
+// router.delete('/:id', async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     await pool.query(`DELETE FROM answers WHERE form_id = $1`, [id]);
+//     await pool.query(`DELETE FROM forms WHERE id = $1`, [id]);
+//     res.json({ success: true, message: "Form deleted." });
+//   } catch (err) {
+//     console.error("❌ Delete error:", err.message);
+//     res.status(500).json({ success: false });
+//   }
+// });
 
 //Function of the API below. 
 //1. GET /api/admin/:id – Fetch full form data
